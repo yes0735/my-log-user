@@ -1,4 +1,4 @@
-# book-log-user
+# my-log-user
 
 ## Project setup
 ```
