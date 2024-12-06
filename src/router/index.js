@@ -1,17 +1,34 @@
-import { createWebHistory, createRouter } from "vue-router";
+import { createWebHistory, createRouter } from "vue-router"
+import ErrorView from '@/views/ErrorView.vue'
 
 const routes = [
   {
     path: "/",
-    name: "Home",
+    name: "HomePage",
     component: () => import("@/views/HomeView.vue"),
+    meta: { isMenu: true, dark: true },
+  },
+  {
+    path: "/about",
+    name: "AboutPage",
+    component: () => import("@/views/AboutView.vue"),
+    meta: { isMenu: true, dark: true },
+  },
+  {
+    path: "/login",
+    name: "LoginPage",
+    component: () => import("@/views/LoginView.vue"),
     meta: { isMenu: false, dark: true },
   },
   {
-    path: "/1",
-    name: "First Page",
-    component: () => import("@/views/FirstView.vue"),
-    meta: { isMenu: false, dark: true },
+    path: '/:pathMatch(.*)*',
+    name: 'Error404',
+    component: ErrorView,
+    hidden: true,
+    meta: {
+      requiresAuth: false,
+      code: 404,
+    },
   },
 ]
 
