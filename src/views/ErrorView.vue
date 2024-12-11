@@ -31,7 +31,7 @@
             <v-icon
               class="mb-6"
               color="success"
-              icon="mdi:mdi-check-circle-outline"
+              icon="mdi-check-circle-outline"
               size="128"
             ></v-icon>
 

@@ -4,18 +4,18 @@ import 'font-awesome/css/font-awesome.min.css' // Ensure your project is capable
 import { createVuetify } from 'vuetify'
 import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
-import { aliases, fa } from 'vuetify/iconsets/fa4'
-import { mdi } from 'vuetify/iconsets/mdi'
+import { aliases, mdi } from 'vuetify/iconsets/mdi'
+import { fa } from 'vuetify/iconsets/fa4'
 
 export default createVuetify({
   components,
   directives,
   icons: {
-    defaultSet: 'fa',
+    defaultSet: 'mdi',
     aliases,
     sets: {
-      fa,
       mdi,
+      fa,
     },
   },
 })

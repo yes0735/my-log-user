@@ -1,88 +1,125 @@
 <template>
-  <v-sheet class="mx-auto" width="300" style="padding-top: 400px;">
-    <v-form ref="form">
-      <v-text-field
-        v-model="name"
-        :counter="10"
-        :rules="nameRules"
-        label="Name"
-        clearable
-        clear-icon="mdi:mdi-close-circle"
-        required
-      ></v-text-field>
+  <div>
+    <v-img
+      class="mx-auto my-6"
+      max-width="228"
+      src="https://cdn.vuetifyjs.com/docs/images/logos/vuetify-logo-v3-slim-text-light.svg"
+    ></v-img>
 
-      <v-text-field
-        v-model="password"
-        :rules="nameRules"
-        hint="Enter your password to access this website"
-        label="Password"
-        type="password"
-        clearable
-        clear-icon="mdi:mdi-close-circle"
-        required
-      ></v-text-field>
+    <v-card
+      class="mx-auto pa-12 pb-8"
+      elevation="8"
+      max-width="448"
+      rounded="lg"
+    >
+      <v-form
+        v-model="form"
+        @submit.prevent="onSubmit"
+      >
 
-      <v-checkbox
-        v-model="checkbox"
-        :rules="[v => !!v || 'You must agree to continue!']"
-        label="Do you agree?"
-        required
-      ></v-checkbox>
+        <div class="text-subtitle-1 text-medium-emphasis">계정</div>
 
-      <div class="d-flex flex-column">
-        <v-btn
-          class="mt-4"
-          color="success"
-          block
-          @click="validate"
+        <v-text-field
+          v-model="email"
+          :readonly="loading"
+          :rules="rules"
+          density="compact"
+          placeholder="Email address"
+          prepend-inner-icon="mdi-email-outline"
+          variant="outlined"
+        ></v-text-field>
+
+        <div class="text-subtitle-1 text-medium-emphasis d-flex align-center justify-space-between">
+          비밀번호
+          <a
+            class="text-caption text-decoration-none text-blue"
+            href="#"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            로그인 비밀번호를 잊으셨나요?</a>
+        </div>
+
+        <v-text-field
+          v-model="password"
+          :readonly="loading"
+          :rules="[required]"
+          :append-inner-icon="visible ? 'mdi-eye' : 'mdi-eye-off'"
+          :type="visible ? 'text' : 'password'"
+          density="compact"
+          placeholder="Enter your password"
+          prepend-inner-icon="mdi-lock-outline"
+          variant="outlined"
+          @click:append-inner="visible = !visible"
+        ></v-text-field>
+
+        <v-card
+          class="mb-12"
+          color="surface-variant"
+          variant="tonal"
         >
-          Validate
+          <v-card-text class="text-medium-emphasis text-caption">
+            경고: 3회 연속으로 로그인에 실패하면 계정이 3시간 동안 일시적으로 잠깁니다. 지금 로그인해야 하는 경우 아래의 "로그인 비밀번호를 잊으셨나요?"를 클릭하여 로그인 비밀번호를 재설정할 수도 있습니다.
+          </v-card-text>
+        </v-card>
+
+        <v-btn
+          :disabled="!form"
+          :loading="loading"
+          class="mb-8"
+          color="blue"
+          size="large"
+          variant="tonal"
+          type="submit"
+          block
+        >
+          로그인
         </v-btn>
 
-        <v-btn
-          class="mt-4"
-          color="error"
-          block
-          @click="reset"
-        >
-          Reset Form
-        </v-btn>
-
-        <v-btn
-          class="mt-4"
-          color="warning"
-          block
-          @click="resetValidation"
-        >
-          Reset Validation
-        </v-btn>
-      </div>
-    </v-form>
-  </v-sheet>
+        <v-card-text class="text-center">
+          <router-link
+            class="text-blue text-decoration-none"
+            to="/user/join"
+            rel="noopener noreferrer"
+          >
+            지금 가입하세요 <v-icon icon="mdi-chevron-right"></v-icon>
+          </router-link>
+        </v-card-text>
+      </v-form>
+    </v-card>
+  </div>
 </template>
 <script>
   export default {
     name: 'LoginView',
     data: () => ({
-      name: '',
-      password: '',
-      nameRules: [
-        v => !!v || 'Field is required',
+      form: false,
+      email: null,
+      password: null,
+      loading: false,
+      visible: false,
+      rules: [
+        value => !!value || 'Field is required',
+        value => (value || '').length <= 20 || 'Max 20 characters',
+        value => {
+          const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+          return pattern.test(value) || 'Invalid e-mail'
+        },
       ],
-      checkbox: false,
     }),
 
     methods: {
-      async validate () {
-        const { valid } = await this.$refs.form.validate()
+      onSubmit () {
+        if (!this.form) return
 
-        if (valid) alert('Form is valid')
+        this.loading = true
+        setTimeout(() => (
+          // this.loading = false
+          this.$router.push(`/`).catch(() => {}) // 2초후에 페이지 이동
+        ), 2000)
       },
-      reset () {
-        this.$refs.form.reset()
-      },
-      resetValidation () {
-        this.$refs.form.resetValidation()
+      required (v) {
+        return !!v || 'Field is required'
       },
     },
   }

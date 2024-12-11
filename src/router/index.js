@@ -21,6 +21,12 @@ const routes = [
     meta: { isMenu: false, dark: true },
   },
   {
+    path: "/user/join",
+    name: "UserJoinPage",
+    component: () => import("@/views/UserJoinView.vue"),
+    meta: { isMenu: false, dark: true },
+  },
+  {
     path: '/:pathMatch(.*)*',
     name: 'Error404',
     component: ErrorView,
