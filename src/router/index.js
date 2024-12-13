@@ -4,8 +4,8 @@ import ErrorView from '@/views/ErrorView.vue'
 const routes = [
   {
     path: "/",
-    name: "HomePage",
-    component: () => import("@/views/HomeView.vue"),
+    name: "BookList",
+    component: () => import("@/views/BookList.vue"),
     meta: { isMenu: true, dark: true },
   },
   {
