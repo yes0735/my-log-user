@@ -1,5 +1,5 @@
 import { createWebHistory, createRouter } from "vue-router"
-import ErrorView from '@/views/ErrorView.vue'
+import ErrorView from "@/views/ErrorView.vue"
 
 const routes = [
   {
@@ -27,8 +27,8 @@ const routes = [
     meta: { isMenu: false, dark: true },
   },
   {
-    path: '/:pathMatch(.*)*',
-    name: 'Error404',
+    path: "/:pathMatch(.*)*",
+    name: "Error404",
     component: ErrorView,
     hidden: true,
     meta: {
