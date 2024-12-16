@@ -134,6 +134,7 @@ import {
   CloseOutlined,
 } from "@ant-design/icons-vue"
 import { ref, onMounted } from "vue"
+import { useHttp } from "@/api/http"
 
 const list = [
   {
@@ -274,10 +275,9 @@ const tabList = [
 ]
 
 const tab = ref(1)
-const dialog = ref(false)
-const icons = ref(["mdi-close"])
 const originBookList = ref([])
 const bookList = ref([])
+const http = useHttp()
 const readingTypeSelectList = ref([
   { readingDisplayName: "전체", readingName: "all" },
   { readingDisplayName: "소장", readingName: "collection" },
@@ -310,11 +310,19 @@ const processingData = (status) => {
   }
 }
 
-const deleteBook = (bookInfo) => {
-  dialog.value = true
-  bookList.value = bookList.value.filter(
-    (book) => book.bookNo !== bookInfo.bookNo
-  )
+const deleteBook = async (bookInfo) => {
+  await http.confirm({
+    title: "시스템 관리자",
+    message: "책을 삭제하시겠습니까?",
+    okText: "삭제",
+    cancelText: "취소",
+    okType: "danger",
+    onOk: () => {
+      bookList.value = bookList.value.filter(
+        (book) => book.bookNo !== bookInfo.bookNo
+      )
+    },
+  })
 }
 
 const resetSelects = () => {
