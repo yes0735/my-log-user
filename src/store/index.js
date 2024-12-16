@@ -1,8 +1,23 @@
-import { defineStore } from 'pinia';
-// import '@/mixin/http.js'
+import { defineStore } from "pinia"
 
-export const usePostStore = defineStore('storeId',{
-	state: () => ({
-		contents: [],
-	}),
+export const useCommonStore = defineStore("common", {
+  state: () => ({
+    modals: [],
+    cancelTokens: [],
+    requestCount: 0,
+  }),
+  actions: {
+    addCancelToken(source) {
+      this.cancelTokens.push(source)
+    },
+    increaseRequestCount() {
+      this.requestCount++
+    },
+    decreaseRequestCount() {
+      this.requestCount--
+    },
+    clearCancelTokens() {
+      this.cancelTokens = []
+    },
+  },
 })
