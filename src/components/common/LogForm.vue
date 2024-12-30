@@ -37,9 +37,9 @@
                 <div class="block-wrapper relative hover:bg-gray-50/50">
                   <!-- 드래그 핸들 -->
                   <div
-                    class="drag-handle absolute left-2 top-2 transition-opacity flex items-center gap-1 select-none z-10 cursor-move touch-manipulation"
+                    class="drag-handle absolute left-0 top-0 transition-opacity flex items-center gap-1 select-none z-10 cursor-move touch-manipulation"
                   >
-                    <Drag class="text-gray-400" />
+                    <Drag class="text-gray-400 w-6 h-6" />
                   </div>
 
                   <!-- 블록 컨텐츠 -->
@@ -48,10 +48,12 @@
                     contenteditable="true"
                     class="min-h-[24px] p-1 empty-block w-full focus:outline-none"
                     data-placeholder="내용을 입력하세요"
-                    @keydown="(e) => handleKeyDown(e, index)"
-                    @input="(e) => handleBlockInput(e, index)"
-                    v-html="element.content"
-                  ></div>
+                    @keydown="(e) => onKeyDown(e, index)"
+                    @input="(e) => onInput(e, index)"
+                    @compositionend="(e) => handleCompositionEnd(e, index)"
+                  >
+                    {{ element.content }}
+                  </div>
                 </div>
               </template>
             </draggable>
@@ -79,10 +81,11 @@
 </template>
 
 <script setup>
-import { ref, watch, onBeforeUnmount } from "vue"
+import { ref, watch, onBeforeUnmount, nextTick } from "vue"
 import { useScrollLock } from "@/composables/useScrollLock"
 import Drag from "@/components/icons/Drag.vue"
 import draggable from "vuedraggable"
+import { useEditorInput } from "@/composables/useEditorInput"
 
 const props = defineProps({
   isNew: Boolean,
@@ -102,6 +105,13 @@ const isDragging = ref(false)
 
 // 스크롤 잠금 훅 사용
 const { lock, unlock } = useScrollLock()
+
+const { handleKeyDown, handleBlockInput } = useEditorInput()
+
+// blocks 상태 업데이트 함수
+const updateBlocks = (newBlocks) => {
+  blocks.value = newBlocks
+}
 
 // 드래그 시작
 const dragStart = () => {
@@ -147,36 +157,11 @@ const handleTitleInput = (e) => {
   title.value = e.target.textContent.trim()
 }
 
-const handleKeyDown = (e, index) => {
-  if (e.key === "Enter" && !e.shiftKey) {
-    e.preventDefault()
-    const newId = Math.max(...blocks.value.map((b) => b.id)) + 1
-    blocks.value.splice(index + 1, 0, { id: newId, content: "" })
-
-    setTimeout(() => {
-      const newBlock = blockRefs.value[index + 1]
-      if (newBlock) {
-        newBlock.focus()
-      }
-    }, 0)
-  }
-
-  if (e.key === "Backspace" && index > 0 && !e.target.textContent.trim()) {
-    e.preventDefault()
-    const previousBlock = blockRefs.value[index - 1]
-    blocks.value.splice(index, 1)
-
-    setTimeout(() => {
-      if (previousBlock) {
-        previousBlock.focus()
-      }
-    }, 0)
-  }
-}
-
-const handleBlockInput = (e, index) => {
-  blocks.value[index].content = e.target.innerHTML
-}
+// 템플릿에서 이벤트 핸들러 사용 시
+const onKeyDown = (e, index) =>
+  handleKeyDown(e, index, blocks.value, blockRefs, updateBlocks)
+const onInput = (e, index) =>
+  handleBlockInput(e, index, blocks.value, updateBlocks)
 
 const closeForm = () => {
   emit("update:modelValue", false)
@@ -190,17 +175,17 @@ const saveContent = () => {
 
 const handleTitleEnter = (e) => {
   e.preventDefault()
-  const firstBlock = blockRefs.value[0]
-  if (firstBlock) {
-    firstBlock.focus()
-    // 커서를 텍스트의 시작 위치로 이동
-    const range = document.createRange()
-    const selection = window.getSelection()
-    range.setStart(firstBlock, 0)
-    range.collapse(true)
-    selection.removeAllRanges()
-    selection.addRange(range)
-  }
+  // IME 입력 중인지 확인
+  if (e.isComposing) return false
+
+  blockRefs.value[0].focus()
+}
+
+// compositionend 이벤트 핸들러 수정
+const handleCompositionEnd = (e, index) => {
+  nextTick(() => {
+    blocks.value[index].content = e.target.textContent
+  })
 }
 </script>
 
@@ -301,5 +286,18 @@ const handleTitleEnter = (e) => {
   opacity: 0.9;
   background: white;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.empty-block {
+  white-space: pre-wrap !important; /* 줄바꿈 강제 적용 */
+  word-break: break-word;
+  min-height: 24px;
+  padding: 1px;
+  width: 100%;
+  display: block; /* block 레벨 요소로 설정 */
+}
+
+[contenteditable="true"] {
+  white-space: pre-wrap !important; /* contenteditable 요소에도 적용 */
 }
 </style>

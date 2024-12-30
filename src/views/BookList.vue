@@ -118,7 +118,7 @@
         </a-tab-pane>
       </a-tabs>
     </div>
-    <LogForm v-model="isLogFormVisible" />
+    <LogForm v-model="isLogFormVisible" isNew />
   </div>
 </template>
 
@@ -126,7 +126,7 @@
 import ContentsCover from "@/components/common/ContentsCover.vue"
 import LogForm from "@/components/common/LogForm.vue"
 
-import { BookOutlined, CloseOutlined } from "@ant-design/icons-vue"
+import { CloseOutlined } from "@ant-design/icons-vue"
 import { ref, onMounted } from "vue"
 import { useHttp } from "@/api/http"
 
