@@ -56,7 +56,8 @@
                 </svg>
               </button>
               <div
-                class="absolute z-10 left-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 hidden group-hover:block"
+                class="absolute z-10 left-0 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 hidden group-hover:block before:content-[''] before:absolute before:w-full before:h-2 before:-top-2"
+                style="top: calc(100% + 0.25rem)"
               >
                 <div class="py-1">
                   <router-link
