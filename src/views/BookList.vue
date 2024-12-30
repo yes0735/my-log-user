@@ -3,19 +3,15 @@
     <ContentsCover />
     <!-- 상단 버튼 -->
     <div class="w-full max-w-7xl mx-auto px-4 lg:px-5">
-      <div class="mb-1">
-        <a-button type="primary" ghost to="/1">
-          <template #icon><EditOutlined /></template>
+      <div class="flex justify-end py-4">
+        <button
+          class="inline-flex items-center px-4 py-2 border border-blue-500 text-blue-500 hover:bg-blue-50 rounded-md transition-colors"
+          @click="isLogFormVisible = true"
+        >
+          <span class="mr-2">✏️</span>
           독서 기록 작성
-        </a-button>
+        </button>
       </div>
-      <div class="mb-3">
-        <a-button type="default" to="/1">
-          <template #icon><BookOutlined /></template>
-          책장에 책 추가
-        </a-button>
-      </div>
-
       <!-- 리스트 -->
       <a-tabs v-model:activeKey="tab" @change="handleTabChange">
         <a-tab-pane
@@ -122,17 +118,15 @@
         </a-tab-pane>
       </a-tabs>
     </div>
+    <LogForm v-model="isLogFormVisible" />
   </div>
 </template>
 
 <script setup>
 import ContentsCover from "@/components/common/ContentsCover.vue"
+import LogForm from "@/components/common/LogForm.vue"
 
-import {
-  EditOutlined,
-  BookOutlined,
-  CloseOutlined,
-} from "@ant-design/icons-vue"
+import { BookOutlined, CloseOutlined } from "@ant-design/icons-vue"
 import { ref, onMounted } from "vue"
 import { useHttp } from "@/api/http"
 
@@ -297,6 +291,7 @@ const orderSelectList = ref([
 ])
 const orderSelected = ref("")
 const transparent = ref("rgba(255, 255, 255, 0)")
+const isLogFormVisible = ref(false)
 
 const loadData = () => {
   bookList.value = list

@@ -30,7 +30,7 @@
 }
 
 .autofill-white {
-  @apply [&_input:-webkit-autofill]:[-webkit-text-fill-color:theme(colors.gray-800)]
+  @apply [&_input:-webkit-autofill]:[-webkit-text-fill-color:theme(colors.gray.800)]
          [&_input:-webkit-autofill]:[-webkit-box-shadow:0_0_0_1000px_theme(colors.white)_inset]
          [&_input:-webkit-autofill]:[box-shadow:0_0_0_1000px_theme(colors.white)_inset]
          [&_input:-webkit-autofill]:[transition:background-color_5000s_ease-in-out_0s];
