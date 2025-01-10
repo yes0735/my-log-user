@@ -129,6 +129,8 @@ import LogForm from "@/components/common/LogForm.vue"
 import { CloseOutlined } from "@ant-design/icons-vue"
 import { ref, onMounted } from "vue"
 import { useHttp } from "@/api/http"
+import { useBook } from '@/store/book'
+import { storeToRefs } from 'pinia'
 
 const list = [
   {
@@ -293,9 +295,16 @@ const orderSelected = ref("")
 const transparent = ref("rgba(255, 255, 255, 0)")
 const isLogFormVisible = ref(false)
 
-const loadData = () => {
+
+const bookStore = useBook()
+const { data, loading, error } = storeToRefs(bookStore) // 상태를 반응형으로 가져옴
+
+const loadData = async () => {
   bookList.value = list
   originBookList.value = JSON.parse(JSON.stringify(bookList.value))
+
+  await bookStore.fetchData() // fetchData 액션 호출하여 데이터 가져오기
+  // const list = bookStore.data
 }
 
 const processingData = (status) => {
