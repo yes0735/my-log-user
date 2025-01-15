@@ -133,7 +133,7 @@
           </router-link>
           <span class="text-[#888]" aria-hidden="true">|</span>
           <router-link 
-            to="/register" 
+            to="/user/join" 
             class="text-[#888] hover:text-black transition-colors duration-200 ease-in-out"
             aria-label="회원가입"
           >
