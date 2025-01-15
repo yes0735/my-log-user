@@ -4,7 +4,6 @@ import App from "./App.vue"
 import { createPinia } from "pinia"
 import router from "./router"
 import axios from "axios"
-import vuetify from "@/plugins/vuetify"
 import { useCommonStore } from "@/store"
 
 import "./style.css"
@@ -52,7 +51,6 @@ const pinia = createPinia()
 app.use(pinia)
 app.use(router)
 app.use(Antd)
-app.use(vuetify)
 
 // router가 준비되면 앱 마운트
 router.isReady().then(() => {
