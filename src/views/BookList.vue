@@ -87,12 +87,12 @@
                         <div v-if="item.img" class="relative">
                           <img
                             :src="item.img"
-                            class="h-[300px] w-full object-cover transition-opacity group-hover:opacity-90"
+                            class="h-[300px] w-full object-cover transition-opacity group-hover:opacity-90 rounded-t-lg"
                           />
                         </div>
                         <div
                           v-else
-                          class="h-[300px] w-full bg-gray-100 flex items-center justify-center text-gray-400 transition-colors group-hover:bg-gray-200"
+                          class="h-[300px] w-full bg-gray-100 flex items-center justify-center text-gray-400 transition-colors group-hover:bg-gray-200 rounded-t-lg"
                         >
                           <span class="text-sm">이미지 없음</span>
                         </div>
