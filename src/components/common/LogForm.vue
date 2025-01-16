@@ -26,382 +26,419 @@
         <div class="p-4 flex-1 overflow-y-auto">
           <div class="editor-container space-y-4">
             <!-- 기본 항목들 -->
-            <div class="space-y-2 pb-6 border-b border-gray-200">
-              <!-- 1. 저자 -->
-              <div class="form-group flex items-center">
-                <div class="flex items-center gap-2 w-32">
-                  <InputIcons type="text" class="w-4 h-4 text-gray-400" />
-                  <label class="text-sm font-medium text-gray-700">저자</label>
+            <div
+              class="space-y-2 border-b border-gray-200"
+              :class="{ 'pb-6': isExpanded, 'pb-2': !isExpanded }"
+            >
+              <!-- 상시 노출 항목 5개 -->
+              <div class="space-y-2">
+                <!-- 1. 저자 -->
+                <div class="form-group flex items-center">
+                  <div class="flex items-center gap-2 w-32">
+                    <InputIcons type="text" class="w-4 h-4 text-gray-400" />
+                    <label class="text-sm font-medium text-gray-700"
+                      >저자</label
+                    >
+                  </div>
+                  <input
+                    type="text"
+                    v-model="bookInfo.author"
+                    class="flex-1 px-3 rounded-md border border-gray-300 shadow-sm focus:border-black focus:ring-black"
+                  />
                 </div>
-                <input
-                  type="text"
-                  v-model="bookInfo.author"
-                  class="flex-1 px-3 rounded-md border border-gray-300 shadow-sm focus:border-black focus:ring-black"
-                />
-              </div>
 
-              <!-- 2. 분야 -->
-              <div class="form-group flex items-center">
-                <div class="flex items-center gap-2 w-32">
-                  <InputIcons type="select" class="w-4 h-4 text-gray-400" />
-                  <label class="text-sm font-medium text-gray-700">분야</label>
-                </div>
-                <div class="flex-1 relative">
-                  <button
-                    type="button"
-                    @click="toggleDropdown('category')"
-                    class="w-full px-3 py-2 text-left text-sm rounded-md border border-gray-300 focus:outline-none focus:ring-1 focus:ring-black focus:border-black bg-white flex justify-between items-center"
-                  >
-                    <span class="text-gray-700">
-                      {{ getSelectedLabel("category", categoryOptions) }}
-                    </span>
-                    <ChevronIcon :is-open="openDropdown === 'category'" />
-                  </button>
+                <!-- 2. 분야 -->
+                <div class="form-group flex items-center">
+                  <div class="flex items-center gap-2 w-32">
+                    <InputIcons type="select" class="w-4 h-4 text-gray-400" />
+                    <label class="text-sm font-medium text-gray-700"
+                      >분야</label
+                    >
+                  </div>
+                  <div class="flex-1 relative">
+                    <button
+                      type="button"
+                      @click="toggleDropdown('category')"
+                      class="w-full px-3 py-2 text-left text-sm rounded-md border border-gray-300 focus:outline-none focus:ring-1 focus:ring-black focus:border-black bg-white flex justify-between items-center"
+                    >
+                      <span class="text-gray-700">
+                        {{ getSelectedLabel("category", categoryOptions) }}
+                      </span>
+                      <ChevronIcon :is-open="openDropdown === 'category'" />
+                    </button>
 
-                  <div
-                    v-if="openDropdown === 'category'"
-                    class="absolute z-10 mt-1 w-full bg-white rounded-md shadow-lg border border-gray-200"
-                  >
-                    <div class="p-2 border-b">
-                      <div class="relative">
-                        <input
-                          type="text"
-                          v-model="searchQueries.category"
-                          class="w-full px-3 py-1.5 pr-8 text-sm rounded-md border border-gray-300 focus:outline-none focus:ring-1 focus:ring-black focus:border-black"
-                          placeholder="검색..."
-                          @click.stop
-                        />
-                        <span
-                          class="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400"
-                        >
-                          <SearchIcon size="sm" />
-                        </span>
+                    <div
+                      v-if="openDropdown === 'category'"
+                      class="absolute z-10 mt-1 w-full bg-white rounded-md shadow-lg border border-gray-200"
+                    >
+                      <div class="p-2 border-b">
+                        <div class="relative">
+                          <input
+                            type="text"
+                            v-model="searchQueries.category"
+                            class="w-full px-3 py-1.5 pr-8 text-sm rounded-md border border-gray-300 focus:outline-none focus:ring-1 focus:ring-black focus:border-black"
+                            placeholder="검색..."
+                            @click.stop
+                          />
+                          <span
+                            class="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400"
+                          >
+                            <SearchIcon size="sm" />
+                          </span>
+                        </div>
+                      </div>
+
+                      <div class="py-1 max-h-48 overflow-auto">
+                        <template v-if="filteredCategoryOptions.length">
+                          <button
+                            v-for="option in filteredCategoryOptions"
+                            :key="option.value"
+                            @click="selectOption('category', option.value)"
+                            class="w-full px-3 py-2 text-sm text-left hover:bg-gray-100 focus:outline-none"
+                            :class="{
+                              'bg-gray-50': bookInfo.category === option.value,
+                              'font-medium': bookInfo.category === option.value,
+                            }"
+                          >
+                            {{ option.label }}
+                          </button>
+                        </template>
+                        <div v-else class="px-3 py-2 text-sm text-gray-500">
+                          검색 결과가 없습니다
+                        </div>
                       </div>
                     </div>
+                  </div>
+                </div>
 
-                    <div class="py-1 max-h-48 overflow-auto">
-                      <template v-if="filteredCategoryOptions.length">
+                <!-- 3. 별점 -->
+                <div class="form-group flex items-center">
+                  <div class="flex items-center gap-2 w-32">
+                    <StarIcon size="sm" />
+                    <label class="text-sm font-medium text-gray-700"
+                      >별점</label
+                    >
+                  </div>
+                  <div class="flex-1">
+                    <StarRating v-model="bookInfo.rating" />
+                  </div>
+                </div>
+
+                <!-- 4. 독서유형 -->
+                <div class="form-group flex items-center">
+                  <div class="flex items-center gap-2 w-32">
+                    <InputIcons type="select" class="w-4 h-4 text-gray-400" />
+                    <label class="text-sm font-medium text-gray-700"
+                      >독서유형</label
+                    >
+                  </div>
+                  <div class="flex-1 relative">
+                    <button
+                      type="button"
+                      @click="toggleDropdown('readingType')"
+                      class="w-full px-3 py-2 text-left text-sm rounded-md border border-gray-300 focus:outline-none focus:ring-1 focus:ring-black focus:border-black bg-white flex justify-between items-center"
+                    >
+                      <span class="text-gray-700">
+                        {{
+                          getSelectedLabel("readingType", readingTypeOptions)
+                        }}
+                      </span>
+                      <ChevronIcon :is-open="openDropdown === 'readingType'" />
+                    </button>
+
+                    <div
+                      v-if="openDropdown === 'readingType'"
+                      class="absolute z-10 mt-1 w-full bg-white rounded-md shadow-lg border border-gray-200"
+                    >
+                      <div class="py-1">
                         <button
-                          v-for="option in filteredCategoryOptions"
+                          v-for="option in readingTypeOptions"
                           :key="option.value"
-                          @click="selectOption('category', option.value)"
+                          @click="selectOption('readingType', option.value)"
                           class="w-full px-3 py-2 text-sm text-left hover:bg-gray-100 focus:outline-none"
                           :class="{
-                            'bg-gray-50': bookInfo.category === option.value,
-                            'font-medium': bookInfo.category === option.value,
+                            'bg-gray-50': bookInfo.readingType === option.value,
+                            'font-medium':
+                              bookInfo.readingType === option.value,
                           }"
                         >
                           {{ option.label }}
                         </button>
-                      </template>
-                      <div v-else class="px-3 py-2 text-sm text-gray-500">
-                        검색 결과가 없습니다
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- 5. 상태 -->
+                <div class="form-group flex items-center">
+                  <div class="flex items-center gap-2 w-32">
+                    <InputIcons type="select" class="w-4 h-4 text-gray-400" />
+                    <label class="text-sm font-medium text-gray-700"
+                      >상태</label
+                    >
+                  </div>
+                  <div class="flex-1 relative">
+                    <button
+                      type="button"
+                      @click="toggleDropdown('status')"
+                      class="w-full px-3 py-2 text-left text-sm rounded-md border border-gray-300 focus:outline-none focus:ring-1 focus:ring-black focus:border-black bg-white flex justify-between items-center"
+                    >
+                      <span class="text-gray-700">
+                        {{ getSelectedLabel("status", statusOptions) }}
+                      </span>
+                      <ChevronIcon :is-open="openDropdown === 'status'" />
+                    </button>
+
+                    <div
+                      v-if="openDropdown === 'status'"
+                      class="absolute z-10 mt-1 w-full bg-white rounded-md shadow-lg border border-gray-200"
+                    >
+                      <div class="py-1">
+                        <button
+                          v-for="option in statusOptions"
+                          :key="option.value"
+                          @click="selectOption('status', option.value)"
+                          class="w-full px-3 py-2 text-sm text-left hover:bg-gray-100 focus:outline-none"
+                          :class="{
+                            'bg-gray-50': bookInfo.status === option.value,
+                            'font-medium': bookInfo.status === option.value,
+                          }"
+                        >
+                          {{ option.label }}
+                        </button>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
 
-              <!-- 3. 별점 -->
-              <div class="form-group flex items-center">
-                <div class="flex items-center gap-2 w-32">
-                  <StarIcon size="sm" />
-                  <label class="text-sm font-medium text-gray-700">별점</label>
-                </div>
-                <div class="flex-1">
-                  <div class="flex items-center gap-1">
-                    <button
-                      v-for="n in 5"
-                      :key="n"
-                      @click="bookInfo.rating = n"
-                      class="text-2xl focus:outline-none transition-colors"
-                      :class="
-                        n <= bookInfo.rating
-                          ? 'text-yellow-400 hover:text-yellow-500'
-                          : 'text-gray-300 hover:text-gray-400'
-                      "
+              <!-- 추가 항목들 (접을 수 있는 영역) -->
+              <div
+                v-show="isExpanded"
+                class="space-y-2 transition-all duration-300"
+                :class="{
+                  'opacity-0 h-0 overflow-hidden': !isExpanded,
+                  'opacity-100': isExpanded,
+                }"
+              >
+                <!-- 6. 출판사 -->
+                <div class="form-group flex items-center">
+                  <div class="flex items-center gap-2 w-32">
+                    <InputIcons type="text" class="w-4 h-4 text-gray-400" />
+                    <label class="text-sm font-medium text-gray-700"
+                      >출판사</label
                     >
-                      ★
-                    </button>
-                    <span class="ml-2 text-sm text-gray-500">
-                      {{ `${bookInfo.rating}점` }}
-                    </span>
                   </div>
+                  <input
+                    type="text"
+                    v-model="bookInfo.publisher"
+                    class="flex-1 px-3 rounded-md border border-gray-300 shadow-sm focus:border-black focus:ring-black"
+                  />
                 </div>
-              </div>
 
-              <!-- 4. 독서유형 -->
-              <div class="form-group flex items-center">
-                <div class="flex items-center gap-2 w-32">
-                  <InputIcons type="select" class="w-4 h-4 text-gray-400" />
-                  <label class="text-sm font-medium text-gray-700"
-                    >독서유형</label
-                  >
-                </div>
-                <div class="flex-1 relative">
-                  <button
-                    type="button"
-                    @click="toggleDropdown('readingType')"
-                    class="w-full px-3 py-2 text-left text-sm rounded-md border border-gray-300 focus:outline-none focus:ring-1 focus:ring-black focus:border-black bg-white flex justify-between items-center"
-                  >
-                    <span class="text-gray-700">
-                      {{ getSelectedLabel("readingType", readingTypeOptions) }}
-                    </span>
-                    <ChevronIcon :is-open="openDropdown === 'readingType'" />
-                  </button>
-
-                  <div
-                    v-if="openDropdown === 'readingType'"
-                    class="absolute z-10 mt-1 w-full bg-white rounded-md shadow-lg border border-gray-200"
-                  >
-                    <div class="py-1">
-                      <button
-                        v-for="option in readingTypeOptions"
-                        :key="option.value"
-                        @click="selectOption('readingType', option.value)"
-                        class="w-full px-3 py-2 text-sm text-left hover:bg-gray-100 focus:outline-none"
-                        :class="{
-                          'bg-gray-50': bookInfo.readingType === option.value,
-                          'font-medium': bookInfo.readingType === option.value,
-                        }"
-                      >
-                        {{ option.label }}
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- 5. 상태 -->
-              <div class="form-group flex items-center">
-                <div class="flex items-center gap-2 w-32">
-                  <InputIcons type="select" class="w-4 h-4 text-gray-400" />
-                  <label class="text-sm font-medium text-gray-700">상태</label>
-                </div>
-                <div class="flex-1 relative">
-                  <button
-                    type="button"
-                    @click="toggleDropdown('status')"
-                    class="w-full px-3 py-2 text-left text-sm rounded-md border border-gray-300 focus:outline-none focus:ring-1 focus:ring-black focus:border-black bg-white flex justify-between items-center"
-                  >
-                    <span class="text-gray-700">
-                      {{ getSelectedLabel("status", statusOptions) }}
-                    </span>
-                    <ChevronIcon :is-open="openDropdown === 'status'" />
-                  </button>
-
-                  <div
-                    v-if="openDropdown === 'status'"
-                    class="absolute z-10 mt-1 w-full bg-white rounded-md shadow-lg border border-gray-200"
-                  >
-                    <div class="py-1">
-                      <button
-                        v-for="option in statusOptions"
-                        :key="option.value"
-                        @click="selectOption('status', option.value)"
-                        class="w-full px-3 py-2 text-sm text-left hover:bg-gray-100 focus:outline-none"
-                        :class="{
-                          'bg-gray-50': bookInfo.status === option.value,
-                          'font-medium': bookInfo.status === option.value,
-                        }"
-                      >
-                        {{ option.label }}
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- 6. 출판사 -->
-              <div class="form-group flex items-center">
-                <div class="flex items-center gap-2 w-32">
-                  <InputIcons type="text" class="w-4 h-4 text-gray-400" />
-                  <label class="text-sm font-medium text-gray-700"
-                    >출판사</label
-                  >
-                </div>
-                <input
-                  type="text"
-                  v-model="bookInfo.publisher"
-                  class="flex-1 px-3 rounded-md border border-gray-300 shadow-sm focus:border-black focus:ring-black"
-                />
-              </div>
-
-              <!-- 7. 연도 -->
-              <div class="form-group flex items-center">
-                <div class="flex items-center gap-2 w-32">
-                  <InputIcons type="text" class="w-4 h-4 text-gray-400" />
-                  <label class="text-sm font-medium text-gray-700">연도</label>
-                </div>
-                <input
-                  type="number"
-                  v-model="bookInfo.publishYear"
-                  class="flex-1 px-3 rounded-md border border-gray-300 shadow-sm focus:border-black focus:ring-black"
-                />
-              </div>
-
-              <!-- 8. 날짜 -->
-              <div class="form-group flex items-center">
-                <div class="flex items-center gap-2 w-32">
-                  <InputIcons type="date" class="w-4 h-4 text-gray-400" />
-                  <label class="text-sm font-medium text-gray-700">날짜</label>
-                </div>
-                <input
-                  type="date"
-                  v-model="bookInfo.readDate"
-                  class="flex-1 px-3 rounded-md border border-gray-300 shadow-sm focus:border-black focus:ring-black"
-                />
-              </div>
-
-              <!-- 9. 장소 -->
-              <div class="form-group flex items-center">
-                <div class="flex items-center gap-2 w-32">
-                  <InputIcons type="text" class="w-4 h-4 text-gray-400" />
-                  <label class="text-sm font-medium text-gray-700">장소</label>
-                </div>
-                <input
-                  type="text"
-                  v-model="bookInfo.location"
-                  class="flex-1 px-3 rounded-md border border-gray-300 shadow-sm focus:border-black focus:ring-black"
-                />
-              </div>
-
-              <!-- 10. 이 책의 한 줄 -->
-              <div class="form-group flex items-center">
-                <div class="flex items-center gap-2 w-32">
-                  <InputIcons type="text" class="w-4 h-4 text-gray-400" />
-                  <label class="text-sm font-medium text-gray-700"
-                    >이 책의 한 줄</label
-                  >
-                </div>
-                <input
-                  type="text"
-                  v-model="bookInfo.bookSummary"
-                  class="flex-1 px-3 rounded-md border border-gray-300 shadow-sm focus:border-black focus:ring-black"
-                />
-              </div>
-
-              <!-- 11. 나의 생각 한줄 -->
-              <div class="form-group flex items-center">
-                <div class="flex items-center gap-2 w-32">
-                  <InputIcons type="text" class="w-4 h-4 text-gray-400" />
-                  <label class="text-sm font-medium text-gray-700"
-                    >나의 생각 한줄</label
-                  >
-                </div>
-                <input
-                  type="text"
-                  v-model="bookInfo.myThoughts"
-                  class="flex-1 px-3 rounded-md border border-gray-300 shadow-sm focus:border-black focus:ring-black"
-                />
-              </div>
-
-              <!-- 12. 커버 이미지 첨부 -->
-              <div class="form-group flex items-start py-2">
-                <div class="flex items-center gap-2 w-32 pt-2">
-                  <InputIcons type="text" class="w-4 h-4 text-gray-400" />
-                  <label class="text-sm font-medium text-gray-700"
-                    >커버 이미지</label
-                  >
-                </div>
-                <div class="flex-1 flex items-start gap-4">
-                  <!-- 이미지 미리보기 -->
-                  <div
-                    v-if="imagePreview"
-                    class="relative w-16 h-20 shrink-0 z-10"
-                  >
-                    <img
-                      :src="imagePreview"
-                      class="w-full h-full object-cover rounded-md border border-gray-200"
-                      alt="Cover preview"
-                    />
-                    <button
-                      @click="removeImage"
-                      class="absolute -top-2 -right-2 p-1 bg-white rounded-full shadow-sm border border-gray-200 hover:bg-gray-50"
+                <!-- 7. 연도 -->
+                <div class="form-group flex items-center">
+                  <div class="flex items-center gap-2 w-32">
+                    <InputIcons type="text" class="w-4 h-4 text-gray-400" />
+                    <label class="text-sm font-medium text-gray-700"
+                      >연도</label
                     >
-                      <CloseIcon size="sm" />
-                    </button>
                   </div>
+                  <input
+                    type="number"
+                    v-model="bookInfo.publishYear"
+                    class="flex-1 px-3 rounded-md border border-gray-300 shadow-sm focus:border-black focus:ring-black"
+                  />
+                </div>
 
-                  <!-- 파일 입력 -->
-                  <div class="flex-1">
-                    <label
-                      class="inline-flex w-full items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 cursor-pointer"
+                <!-- 8. 날짜 -->
+                <div class="form-group flex items-center">
+                  <div class="flex items-center gap-2 w-32">
+                    <InputIcons type="date" class="w-4 h-4 text-gray-400" />
+                    <label class="text-sm font-medium text-gray-700"
+                      >날짜</label
                     >
-                      <ImageIcon class="mr-2" />
-                      {{ imagePreview ? "이미지 변경" : "이미지 선택" }}
-                      <input
-                        type="file"
-                        @change="handleImageUpload"
-                        accept="image/*"
-                        class="hidden"
+                  </div>
+                  <input
+                    type="date"
+                    v-model="bookInfo.readDate"
+                    class="flex-1 px-3 rounded-md border border-gray-300 shadow-sm focus:border-black focus:ring-black"
+                  />
+                </div>
+
+                <!-- 9. 장소 -->
+                <div class="form-group flex items-center">
+                  <div class="flex items-center gap-2 w-32">
+                    <InputIcons type="text" class="w-4 h-4 text-gray-400" />
+                    <label class="text-sm font-medium text-gray-700"
+                      >장소</label
+                    >
+                  </div>
+                  <input
+                    type="text"
+                    v-model="bookInfo.location"
+                    class="flex-1 px-3 rounded-md border border-gray-300 shadow-sm focus:border-black focus:ring-black"
+                  />
+                </div>
+
+                <!-- 10. 이 책의 한 줄 -->
+                <div class="form-group flex items-center">
+                  <div class="flex items-center gap-2 w-32">
+                    <InputIcons type="text" class="w-4 h-4 text-gray-400" />
+                    <label class="text-sm font-medium text-gray-700"
+                      >이 책의 한 줄</label
+                    >
+                  </div>
+                  <input
+                    type="text"
+                    v-model="bookInfo.bookSummary"
+                    class="flex-1 px-3 rounded-md border border-gray-300 shadow-sm focus:border-black focus:ring-black"
+                  />
+                </div>
+
+                <!-- 11. 나의 생각 한줄 -->
+                <div class="form-group flex items-center">
+                  <div class="flex items-center gap-2 w-32">
+                    <InputIcons type="text" class="w-4 h-4 text-gray-400" />
+                    <label class="text-sm font-medium text-gray-700"
+                      >나의 생각 한줄</label
+                    >
+                  </div>
+                  <input
+                    type="text"
+                    v-model="bookInfo.myThoughts"
+                    class="flex-1 px-3 rounded-md border border-gray-300 shadow-sm focus:border-black focus:ring-black"
+                  />
+                </div>
+
+                <!-- 12. 커버 이미지 첨부 -->
+                <div class="form-group flex items-start py-2">
+                  <div class="flex items-center gap-2 w-32 pt-2">
+                    <InputIcons type="text" class="w-4 h-4 text-gray-400" />
+                    <label class="text-sm font-medium text-gray-700"
+                      >커버 이미지</label
+                    >
+                  </div>
+                  <div class="flex-1 flex items-start gap-4">
+                    <!-- 이미지 미리보기 -->
+                    <div
+                      v-if="imagePreview"
+                      class="relative w-16 h-20 shrink-0 z-10"
+                    >
+                      <img
+                        :src="imagePreview"
+                        class="w-full h-full object-cover rounded-md border border-gray-200"
+                        alt="Cover preview"
                       />
-                    </label>
-                    <p class="mt-1 text-xs text-gray-500">
-                      PNG, JPG, GIF 파일 (최대 2MB)
-                    </p>
+                      <button
+                        @click="removeImage"
+                        class="absolute -top-2 -right-2 p-1 bg-white rounded-full shadow-sm border border-gray-200 hover:bg-gray-50"
+                      >
+                        <CloseIcon size="sm" />
+                      </button>
+                    </div>
+
+                    <!-- 파일 입력 -->
+                    <div class="flex-1">
+                      <label
+                        class="inline-flex w-full items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 cursor-pointer"
+                      >
+                        <ImageIcon class="mr-2" />
+                        {{ imagePreview ? "이미지 변경" : "이미지 선택" }}
+                        <input
+                          type="file"
+                          @change="handleImageUpload"
+                          accept="image/*"
+                          class="hidden"
+                        />
+                      </label>
+                      <p class="mt-1 text-xs text-gray-500">
+                        PNG, JPG, GIF 파일 (최대 2MB)
+                      </p>
+                    </div>
                   </div>
                 </div>
+
+                <!-- 13. Page Read -->
+                <div class="form-group flex items-center">
+                  <div class="flex items-center gap-2 w-32">
+                    <InputIcons type="text" class="w-4 h-4 text-gray-400" />
+                    <label class="text-sm font-medium text-gray-700"
+                      >Page Read</label
+                    >
+                  </div>
+                  <input
+                    type="number"
+                    v-model="bookInfo.currentPage"
+                    class="flex-1 px-3 rounded-md border border-gray-300 shadow-sm focus:border-black focus:ring-black"
+                  />
+                </div>
+
+                <!-- 14. Total Page -->
+                <div class="form-group flex items-center">
+                  <div class="flex items-center gap-2 w-32">
+                    <InputIcons type="text" class="w-4 h-4 text-gray-400" />
+                    <label class="text-sm font-medium text-gray-700"
+                      >Total Page</label
+                    >
+                  </div>
+                  <input
+                    type="number"
+                    v-model="bookInfo.totalPages"
+                    class="flex-1 px-3 rounded-md border border-gray-300 shadow-sm focus:border-black focus:ring-black"
+                  />
+                </div>
+
+                <!-- 15. 영업 -->
+                <div class="form-group flex items-center">
+                  <div class="flex items-center gap-2 w-32">
+                    <InputIcons type="text" class="w-4 h-4 text-gray-400" />
+                    <label class="text-sm font-medium text-gray-700"
+                      >영업</label
+                    >
+                  </div>
+                  <input
+                    type="text"
+                    v-model="bookInfo.sales"
+                    class="flex-1 px-3 rounded-md border border-gray-300 shadow-sm focus:border-black focus:ring-black"
+                  />
+                </div>
+
+                <!-- 16. 읽는 과정 -->
+                <div class="form-group flex items-center">
+                  <div class="flex items-center gap-2 w-32">
+                    <InputIcons type="text" class="w-4 h-4 text-gray-400" />
+                    <label class="text-sm font-medium text-gray-700"
+                      >읽는 과정</label
+                    >
+                  </div>
+                  <input
+                    type="text"
+                    v-model="bookInfo.readingProcess"
+                    class="flex-1 px-3 rounded-md border border-gray-300 shadow-sm focus:border-black focus:ring-black"
+                  />
+                </div>
               </div>
 
-              <!-- 13. Page Read -->
-              <div class="form-group flex items-center">
-                <div class="flex items-center gap-2 w-32">
-                  <InputIcons type="text" class="w-4 h-4 text-gray-400" />
-                  <label class="text-sm font-medium text-gray-700"
-                    >Page Read</label
-                  >
-                </div>
-                <input
-                  type="number"
-                  v-model="bookInfo.currentPage"
-                  class="flex-1 px-3 rounded-md border border-gray-300 shadow-sm focus:border-black focus:ring-black"
-                />
-              </div>
-
-              <!-- 14. Total Page -->
-              <div class="form-group flex items-center">
-                <div class="flex items-center gap-2 w-32">
-                  <InputIcons type="text" class="w-4 h-4 text-gray-400" />
-                  <label class="text-sm font-medium text-gray-700"
-                    >Total Page</label
-                  >
-                </div>
-                <input
-                  type="number"
-                  v-model="bookInfo.totalPages"
-                  class="flex-1 px-3 rounded-md border border-gray-300 shadow-sm focus:border-black focus:ring-black"
-                />
-              </div>
-
-              <!-- 15. 영업 -->
-              <div class="form-group flex items-center">
-                <div class="flex items-center gap-2 w-32">
-                  <InputIcons type="text" class="w-4 h-4 text-gray-400" />
-                  <label class="text-sm font-medium text-gray-700">영업</label>
-                </div>
-                <input
-                  type="text"
-                  v-model="bookInfo.sales"
-                  class="flex-1 px-3 rounded-md border border-gray-300 shadow-sm focus:border-black focus:ring-black"
-                />
-              </div>
-
-              <!-- 16. 읽는 과정 -->
-              <div class="form-group flex items-center">
-                <div class="flex items-center gap-2 w-32">
-                  <InputIcons type="text" class="w-4 h-4 text-gray-400" />
-                  <label class="text-sm font-medium text-gray-700"
-                    >읽는 과정</label
-                  >
-                </div>
-                <input
-                  type="text"
-                  v-model="bookInfo.readingProcess"
-                  class="flex-1 px-3 rounded-md border border-gray-300 shadow-sm focus:border-black focus:ring-black"
-                />
-              </div>
+              <!-- 펼치기 버튼 (펼치기 전에만 표시) -->
+              <button
+                v-if="!isExpanded"
+                @click="expandItems"
+                class="w-full py-2 px-4 text-sm text-gray-600 hover:bg-gray-50 rounded-md transition-colors flex items-center justify-center gap-1 -mt-2"
+              >
+                <span>더보기</span>
+                <svg
+                  class="w-4 h-4"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
             </div>
+
             <!-- 블록 에디터 -->
             <draggable
               v-model="blocks"
@@ -479,6 +516,7 @@ import SearchIcon from "@/components/icons/SearchIcon.vue"
 import StarIcon from "@/components/icons/StarIcon.vue"
 import CloseIcon from "@/components/icons/CloseIcon.vue"
 import ImageIcon from "@/components/icons/ImageIcon.vue"
+import StarRating from "./StarRating.vue"
 
 const props = defineProps({
   isNew: Boolean,
@@ -802,6 +840,45 @@ const removeImage = () => {
   imagePreview.value = null
   bookInfo.coverImage = null
 }
+
+// 별점 관련 상태 추가
+const hoverRating = ref(0)
+
+// 별점 설정 함수
+const setRating = (value) => {
+  bookInfo.rating = value
+}
+
+// 별 너비 계산 함수
+const getStarWidth = (position) => {
+  const rating = hoverRating.value || bookInfo.rating
+  const difference = rating - position + 1
+
+  if (difference >= 1) return "100%"
+  if (difference <= 0) return "0%"
+  return `${difference * 100}%`
+}
+
+const isExpanded = ref(false)
+
+// 컴포넌트가 마운트될 때 초기 상태 설정
+onMounted(() => {
+  isExpanded.value = false
+})
+
+// 폼이 닫힐 때 상태 초기화
+watch(
+  () => props.modelValue,
+  (newValue) => {
+    if (!newValue) {
+      isExpanded.value = false
+    }
+  }
+)
+
+const expandItems = () => {
+  isExpanded.value = true
+}
 </script>
 
 <style scoped>
@@ -1010,5 +1087,54 @@ button:focus {
 /* 별점 애니메이션 */
 .text-yellow-400 {
   transition: color 0.2s ease;
+}
+
+/* 별점 컨테이너 스타일 수정 */
+.star-container {
+  position: relative;
+  width: 2em;
+  height: 2em;
+  display: inline-block;
+}
+
+.star-container > div {
+  position: relative;
+  display: inline-block;
+}
+
+.star-fill {
+  top: 0;
+  left: 0;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.star-fill span {
+  display: block;
+  text-align: left;
+}
+
+/* 별 문자가 깨지지 않도록 보정 */
+.star-container span {
+  line-height: 1;
+  user-select: none;
+}
+
+/* hover 효과 */
+.star-container button:hover ~ div {
+  color: #fcd34d;
+}
+
+/* 펼치기 애니메이션 개선 */
+.transition-all {
+  transition-property: all;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 300ms;
+}
+
+.h-0 {
+  height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
 }
 </style>

@@ -6,7 +6,7 @@
       <div class="flex justify-end py-4">
         <button
           class="inline-flex items-center px-4 py-2 border border-blue-500 text-blue-500 hover:bg-blue-50 rounded-md transition-colors"
-          @click="isLogFormVisible = true"
+          @click="openNewForm"
         >
           <span class="mr-2">✏️</span>
           독서 기록 작성
@@ -80,12 +80,17 @@
                 >
                   <template #cover>
                     <div class="relative">
-                      <img
-                        :src="item.img"
-                        class="h-[300px] w-full object-cover"
-                      />
+                      <div
+                        class="cursor-pointer group"
+                        @click="openEditForm(item)"
+                      >
+                        <img
+                          :src="item.img"
+                          class="h-[300px] w-full object-cover transition-opacity group-hover:opacity-90"
+                        />
+                      </div>
                       <div class="absolute top-2 right-2">
-                        <button type="button" @click="deleteBook(item)">
+                        <button type="button" @click.stop="deleteBook(item)">
                           <CloseOutlined
                             class="text-white drop-shadow-[0_2px_2px_rgba(0,0,0,0.5)] text-xl"
                           />
@@ -101,7 +106,11 @@
                         :show-info="false"
                         status="normal"
                       />
-                      <a-rate :value="item.rating" allow-half disabled />
+                      <StarRating
+                        :model-value="item.rating"
+                        readonly
+                        :show-score="false"
+                      />
                     </template>
                   </a-card-meta>
                 </a-card>
@@ -118,19 +127,20 @@
         </a-tab-pane>
       </a-tabs>
     </div>
-    <LogForm v-model="isLogFormVisible" isNew />
+    <LogForm v-model="isLogFormVisible" :is-new="isNewForm" />
   </div>
 </template>
 
 <script setup>
 import ContentsCover from "@/components/common/ContentsCover.vue"
 import LogForm from "@/components/common/LogForm.vue"
+import StarRating from "@/components/common/StarRating.vue"
 
 import { CloseOutlined } from "@ant-design/icons-vue"
 import { ref, onMounted } from "vue"
 import { useHttp } from "@/api/http"
-import { useBook } from '@/store/book'
-import { storeToRefs } from 'pinia'
+import { useBook } from "@/store/book"
+import { storeToRefs } from "pinia"
 
 const list = [
   {
@@ -294,7 +304,7 @@ const orderSelectList = ref([
 const orderSelected = ref("")
 const transparent = ref("rgba(255, 255, 255, 0)")
 const isLogFormVisible = ref(false)
-
+const isNewForm = ref(true)
 
 const bookStore = useBook()
 const { data, loading, error } = storeToRefs(bookStore) // 상태를 반응형으로 가져옴
@@ -345,6 +355,16 @@ const handleTabChange = (key) => {
     resetSelects()
     processingData(tabInfo.tabName)
   }
+}
+
+const openNewForm = () => {
+  isNewForm.value = true
+  isLogFormVisible.value = true
+}
+
+const openEditForm = (book) => {
+  isNewForm.value = false
+  isLogFormVisible.value = true
 }
 
 loadData()
