@@ -84,10 +84,28 @@
                         class="cursor-pointer group"
                         @click="openEditForm(item)"
                       >
-                        <img
-                          :src="item.img"
-                          class="h-[300px] w-full object-cover transition-opacity group-hover:opacity-90"
-                        />
+                        <div v-if="item.img" class="relative">
+                          <img
+                            :src="item.img"
+                            class="h-[300px] w-full object-cover transition-opacity group-hover:opacity-90"
+                          />
+                        </div>
+                        <div
+                          v-else
+                          class="h-[300px] w-full bg-gray-100 flex items-center justify-center text-gray-400 transition-colors group-hover:bg-gray-200"
+                        >
+                          <span class="text-sm">이미지 없음</span>
+                        </div>
+                        <!-- 호버 시 나타나는 편집 힌트 -->
+                        <div
+                          class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                        >
+                          <span
+                            class="bg-black/50 text-white px-3 py-1.5 rounded-md text-sm"
+                          >
+                            수정하기
+                          </span>
+                        </div>
                       </div>
                       <div class="absolute top-2 right-2">
                         <button type="button" @click.stop="deleteBook(item)">
@@ -146,7 +164,7 @@ const list = [
   {
     bookNo: 1,
     title: "읽기 전 책이름 (1)",
-    img: "https://cdn.vuetifyjs.com/images/cards/sunshine.jpg",
+    img: "",
     rating: 0,
     readingRate: 0,
     status: "beforeReading",
