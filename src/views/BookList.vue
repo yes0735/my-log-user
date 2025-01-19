@@ -84,9 +84,9 @@
                         class="cursor-pointer group"
                         @click="openEditForm(item)"
                       >
-                        <div v-if="item.img" class="relative">
+                        <div v-if="item.bookImageLink" class="relative">
                           <img
-                            :src="item.img"
+                            :src="item.bookImageLink"
                             class="h-[300px] w-full object-cover transition-opacity group-hover:opacity-90 rounded-t-lg"
                           />
                         </div>
@@ -116,7 +116,7 @@
                       </div>
                     </div>
                   </template>
-                  <a-card-meta :title="item.title">
+                  <a-card-meta :title="item.bookTitle">
                     <template #description>
                       <div class="font-bold mb-1">{{ item.readingRate }}%</div>
                       <a-progress
@@ -328,11 +328,13 @@ const bookStore = useBook()
 const { data, loading, error } = storeToRefs(bookStore) // 상태를 반응형으로 가져옴
 
 const loadData = async () => {
-  bookList.value = list
-  originBookList.value = JSON.parse(JSON.stringify(bookList.value))
+  // bookList.value = list
+  // originBookList.value = JSON.parse(JSON.stringify(bookList.value))
 
   await bookStore.fetchData() // fetchData 액션 호출하여 데이터 가져오기
-  // const list = bookStore.data
+  bookList.value = bookStore.data.result
+  originBookList.value = JSON.parse(JSON.stringify(bookList.value))
+  // console.log(bookStore.data.result)
 }
 
 const processingData = (status) => {
