@@ -118,14 +118,16 @@
                   </template>
                   <a-card-meta :title="item.bookTitle">
                     <template #description>
-                      <div class="font-bold mb-1">{{ item.readingRate }}%</div>
+                      <div class="font-bold mb-1">
+                        {{item.readPage && item.totalPage ? ((item.readPage * 100) / item.totalPage).toFixed(0) : 0}}%
+                      </div>
                       <a-progress
-                        :percent="item.readingRate"
+                        :percent="item.readPage && item.totalPage ? (item.readPage * 100) / item.totalPage : 0"
                         :show-info="false"
                         status="normal"
                       />
                       <StarRating
-                        :model-value="item.rating"
+                        :model-value="item.scope"
                         readonly
                         :show-score="false"
                       />
@@ -283,7 +285,7 @@ const tabList = [
   },
   {
     tabNo: 2,
-    tabName: "beforeReading",
+    tabName: "unread",
     tabDisplayName: "읽기 전",
   },
   {
@@ -293,7 +295,7 @@ const tabList = [
   },
   {
     tabNo: 4,
-    tabName: "readingCompleted",
+    tabName: "finished",
     tabDisplayName: "완독",
   },
 ]
@@ -304,8 +306,8 @@ const bookList = ref([])
 const http = useHttp()
 const readingTypeSelectList = ref([
   { readingDisplayName: "전체", readingName: "all" },
-  { readingDisplayName: "소장", readingName: "collection" },
-  { readingDisplayName: "eBook", readingName: "eBook" },
+  { readingDisplayName: "소장", readingName: "paper_book" },
+  { readingDisplayName: "eBook", readingName: "ebook" },
 ])
 const readingTypeSelected = ref("")
 const categorySelectList = ref([
