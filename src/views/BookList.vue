@@ -327,7 +327,7 @@ const isLogFormVisible = ref(false)
 const isNewForm = ref(true)
 
 const bookStore = useBook()
-const { data, loading, error } = storeToRefs(bookStore) // 상태를 반응형으로 가져옴
+const { data } = storeToRefs(bookStore) // 상태를 반응형으로 가져옴
 
 const loadData = async () => {
   // bookList.value = list
