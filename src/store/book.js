@@ -6,7 +6,7 @@ export const useBook = defineStore('book', {
     data: null,
   }),
   actions: {
-    async fetchData() {
+    async bookList() {
       const http = useHttp()
 
       try {

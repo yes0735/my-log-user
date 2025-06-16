@@ -327,13 +327,12 @@ const isLogFormVisible = ref(false)
 const isNewForm = ref(true)
 
 const bookStore = useBook()
-const { data } = storeToRefs(bookStore) // 상태를 반응형으로 가져옴
 
 const loadData = async () => {
   // bookList.value = list
   // originBookList.value = JSON.parse(JSON.stringify(bookList.value))
 
-  await bookStore.fetchData() // fetchData 액션 호출하여 데이터 가져오기
+  await bookStore.bookList() // bookList 액션 호출하여 데이터 가져오기
   bookList.value = bookStore.data.result
   originBookList.value = JSON.parse(JSON.stringify(bookList.value))
   // console.log(bookStore.data.result)
