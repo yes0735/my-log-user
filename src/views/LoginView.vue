@@ -44,7 +44,7 @@
             <!-- 비밀번호 입력 -->
             <div class="relative">
               <label for="password" class="sr-only">비밀번호</label>
-              <input 
+              <!-- <input 
                 id="password" 
                 v-model="password"
                 :type="showPassword ? 'text' : 'password'"
@@ -52,6 +52,17 @@
                 aria-label="비밀번호 입력"
                 aria-required="true"
                 pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{8,}$"
+                title="비밀번호는 영문 대/소문자, 숫자, 특수문자(@$!%*?&#)를 각각 1개 이상 포함한 8자 이상이어야 합니다."
+                class="appearance-none relative block w-full px-4 pr-12 py-3 border border-[#dadada] placeholder-[#929294] text-gray-900 rounded-[6px] sm:text-base hover:border-black focus:border-black focus:ring-0"
+                placeholder="비밀번호"
+              > -->
+              <input 
+                id="password" 
+                v-model="password"
+                :type="showPassword ? 'text' : 'password'"
+                required
+                aria-label="비밀번호 입력"
+                aria-required="true"
                 title="비밀번호는 영문 대/소문자, 숫자, 특수문자(@$!%*?&#)를 각각 1개 이상 포함한 8자 이상이어야 합니다."
                 class="appearance-none relative block w-full px-4 pr-12 py-3 border border-[#dadada] placeholder-[#929294] text-gray-900 rounded-[6px] sm:text-base hover:border-black focus:border-black focus:ring-0"
                 placeholder="비밀번호"
@@ -152,6 +163,7 @@ import EyeOpenIcon from '@/components/icons/EyeOpenIcon.vue'
 import EyeClosedIcon from '@/components/icons/EyeClosedIcon.vue'
 import SpinnerIcon from '@/components/icons/SpinnerIcon.vue'
 import LockIcon from '@/components/icons/LockIcon.vue'
+import { useAuthStore } from "@/store/auth"
 
 const router = useRouter()
 const email = ref('')
@@ -172,6 +184,8 @@ const validateEmail = () => {
   }
 }
 
+const useAuth = useAuthStore()
+
 const handleSubmit = async () => {
   if (loading.value) return
 
@@ -181,7 +195,14 @@ const handleSubmit = async () => {
   loading.value = true
   try {
     // TODO: 실제 로그인 로직 구현
-    await new Promise(resolve => setTimeout(resolve, 1500)) // 임시 딜레이
+    // await new Promise(resolve => setTimeout(resolve, 1500)) // 임시 딜레이
+
+    const payload = {
+      loginId: email.value,
+      loginPw: password.value,
+    }
+
+    await useAuth.login(payload) // 액션 호출하여 데이터 가져오기
     router.push('/')
   } catch (error) {
     console.error('Login failed:', error)

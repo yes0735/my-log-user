@@ -2,13 +2,15 @@ import { createWebHistory, createRouter } from "vue-router"
 import ErrorView from "@/views/ErrorView.vue"
 import { storeToRefs } from "pinia"
 import { useAuthStore } from "@/store/auth"
+// import { ref } from "vue"
+import { computed } from 'vue'
 
 const routes = [
   {
     path: "/",
     name: "BookList",
     component: () => import("@/views/BookList.vue"),
-    meta: { isMenu: true, dark: true },
+    meta: { requiresAuth: true, isMenu: true, dark: true },
   },
   {
     path: "/about",
@@ -62,18 +64,30 @@ const router = createRouter({
   },
 })
 
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
   const authStore = useAuthStore()
-  const { user } = storeToRefs(authStore)
+
+  // 1. accessToken이 없으면 localStorage에서 복원 시도
+  if (!authStore.user.accessToken) {
+    authStore.restoreToken()
+  }
+
+  const accessToken = authStore.user.accessToken
 
   // 로그인 여부 확인
-  const isLoginned = !!user.value?.accessToken
+  const isLoginned = !!accessToken
 
   // 로그인 여부 확인 (로그인 필요한 페이지인 경우)
   if (!isLoginned && to.meta.requiresAuth) {
-    next({
-      path: "/login",
-    })
+    // 엑세스 토큰 없음, 리프레시 토큰 갱신 시도
+    const refresh_response = await authStore.refresh()
+    if (refresh_response === true) {
+      next()
+    } else {
+      next({
+        path: "/login",
+      })
+    }
   } else {
     next()
   }

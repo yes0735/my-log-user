@@ -208,6 +208,9 @@
 import Logo from "@/components/icons/Logo.vue"
 import { ref, onMounted, onUnmounted, watch } from "vue"
 import { useRoute, useRouter } from "vue-router"
+import { useAuthStore } from "@/store/auth"
+import { storeToRefs } from 'pinia'
+import { computed } from 'vue'
 
 const isOpen = ref(false)
 const isHidden = ref(false)
@@ -217,7 +220,13 @@ const isMenuInteracting = ref(false)
 const lastScrollPosition = ref(0)
 const route = useRoute()
 const router = useRouter()
-const isLoggedIn = ref(false) // 실제로는 store나 auth 상태에서 가져와야 함
+const authStore = useAuthStore()
+
+const { user } = storeToRefs(authStore)
+const isLoggedIn = computed(() => !!user.value.accessToken)
+
+
+// const isLoggedIn = ref(false) // 실제로는 store나 auth 상태에서 가져와야 함
 
 // 메뉴 인터랙션 타이머
 let menuInteractionTimer
@@ -264,6 +273,7 @@ watch(
 
 const handleLogout = () => {
   // 로그아웃 처리
+  authStore.logout()
   isLoggedIn.value = false
   router.push("/login")
 }

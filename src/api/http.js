@@ -1,11 +1,23 @@
 import axios from "axios"
 import { useAuthStore } from "@/store/auth"
+import { storeToRefs } from "pinia"
 import { Modal } from "ant-design-vue"
-
-const { VITE_USER_API_URL } = import.meta.env
+import { ref, watch } from "vue"
 
 export const useHttp = () => {
-  const authStore = useAuthStore()
+  const authStore = useAuthStore();
+  const { user } = storeToRefs(authStore); // Pinia state를 반응형으로 변환
+  
+  const accessToken = ref(user.value?.accessToken)
+
+  // // 🔹 accessToken 변경 감지 (디버깅)
+  // watch(
+  // () => user.value.accessToken,
+  // (newVal, oldVal) => {
+  //   console.log(`🔄 useHttp.js: accessToken 변경됨: ${oldVal} ➡️ ${newVal}`)
+  //   accessToken.value = newVal // ✅ accessToken 갱신
+  // }
+  // )
 
   const request = (method, url, payload) => {
     // GET, DELETE 메서드의 쿼리 파라미터 처리
@@ -32,10 +44,17 @@ export const useHttp = () => {
         },
       }
 
+      // console.log("url:", url)
+      // console.log("accessToken:", accessToken.value)
+
       // 액세스 토큰이 있으면 헤더에 추가
-      if (authStore.accessToken) {
-        config.headers.Authorization = `Bearer ${authStore.accessToken}`
-      }
+      if (accessToken.value) {
+        // console.log("✅ AccessToken이 존재하여 Authorization 헤더 추가됨!")
+        config.headers.Authorization = `Bearer ${accessToken.value}`
+      } 
+      // else {
+      //   console.warn("⚠️ AccessToken이 존재하지 않습니다.")
+      // }
 
       axios(config)
         .then((response) => resolve(response.data))

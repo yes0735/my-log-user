@@ -5,6 +5,7 @@ import { createPinia } from "pinia"
 import router from "./router"
 import axios from "axios"
 import { useCommonStore } from "@/store"
+import { useAuthStore } from '@/store/auth'
 
 import "./style.css"
 import "@/assets/js/scripts.js"
@@ -49,6 +50,11 @@ app.config.globalProperties.$axios = axios
 
 const pinia = createPinia()
 app.use(pinia)
+
+const auth = useAuthStore()
+auth.restoreToken()
+auth.scheduleTokenRefresh(900)
+
 app.use(router)
 app.use(Antd)
 
