@@ -61,18 +61,18 @@
               </button>
             </div>
 
-            <!-- 이름 입력 -->
+            <!-- 닉네임 입력 -->
             <div>
-              <label for="first" class="sr-only">이름</label>
+              <label for="nickname" class="sr-only">닉네임</label>
               <input 
-                id="first" 
-                v-model="first"
+                id="nickname" 
+                v-model="nickname"
                 type="text"
                 required
-                aria-label="이름 입력"
+                aria-label="닉네임 입력"
                 aria-required="true"
                 class="appearance-none relative block w-full px-4 py-3 border border-[#dadada] placeholder-[#929294] text-gray-900 rounded-[6px] sm:text-base hover:border-black focus:border-black focus:ring-0"
-                placeholder="이름"
+                placeholder="닉네임"
               >
             </div>
 
@@ -132,6 +132,14 @@
 import EyeOpenIcon from '@/components/icons/EyeOpenIcon.vue'
 import EyeClosedIcon from '@/components/icons/EyeClosedIcon.vue'
 import SpinnerIcon from '@/components/icons/SpinnerIcon.vue'
+import { useUser } from "@/store/user"
+import { useAuthStore } from "@/store/auth"
+import { useHttp } from "@/api/http"
+
+
+const userStore = useUser()
+const useAuth = useAuthStore()
+const http = useHttp()
 
 export default {
   name: 'UserJoinView',
@@ -141,16 +149,16 @@ export default {
     SpinnerIcon
   },
   data: () => ({
-    first: '',
+    nickname: '',
     email: '',
     password: '',
-    terms: false,
+    terms: false, // 이용약관 동의 여부 필드 (DB에 저장하는 값은 아님.)
     visible: false,
     loading: false
   }),
   computed: {
     isFormValid() {
-      return this.first && this.email && this.password && this.terms
+      return this.nickname && this.email && this.password && this.terms
     }
   },
   methods: {
@@ -160,15 +168,39 @@ export default {
       this.loading = true
       try {
         // TODO: 실제 회원가입 API 호출
-        await new Promise(resolve => setTimeout(resolve, 1500)) // 임시 딜레이
+        // await new Promise(resolve => setTimeout(resolve, 1500)) // 임시 딜레이
+        const payloadJoin = {
+          userMail: email.value,
+          userPassword: password.value,
+          userNickname: nickname.value,
+        }
 
-        // 회원가입 성공 메시지
-        alert('회원가입이 완료되었습니다.')
+        // console.log(payload)
+        // return
 
-        // TODO: 실제 로그인 API 호출
-        await new Promise(resolve => setTimeout(resolve, 1000)) // 임시 딜레이
+        const response = await userStore.userJoin(payloadJoin) // 액션 호출하여 데이터 가져오기
+        // router.push('/')
 
-        this.$router.push('/')
+        if (http.isOk(response)) {
+
+          // 회원가입 성공 메시지
+          alert('회원가입이 완료되었습니다.')
+
+          // TODO: 실제 로그인 API 호출
+          // 회원가입 완료시 자동 로그인 처리
+          // await new Promise(resolve => setTimeout(resolve, 1000)) // 임시 딜레이
+          const payloadLogin = {
+            loginId: email.value,
+            loginPw: password.value,
+          }
+
+          await useAuth.login(payloadLogin) // 액션 호출하여 데이터 가져오기
+          this.$router.push('/')
+        } else {
+          alert(http.getMessage(response))
+          return
+        }
+
       } catch (error) {
         console.error('회원가입 실패:', error)
       } finally {

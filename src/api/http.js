@@ -70,7 +70,8 @@ export const useHttp = () => {
     isOk: (response) => !response?.response?.data?.error,
     getHTTPErrorStatus: (response) => response?.response?.data?.error?.code,
     getMessage: (response) =>
-      response?.response?.data?.error?.message ||
+      response?.response?.data?.message ||
+      // response?.response?.data?.error?.message ||
       "알 수 없는 오류가 발생했습니다.\n새로고침 해주세요",
     alert({
       title = "빌딩 플러스",

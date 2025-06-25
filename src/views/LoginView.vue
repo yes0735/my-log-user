@@ -164,6 +164,7 @@ import EyeClosedIcon from '@/components/icons/EyeClosedIcon.vue'
 import SpinnerIcon from '@/components/icons/SpinnerIcon.vue'
 import LockIcon from '@/components/icons/LockIcon.vue'
 import { useAuthStore } from "@/store/auth"
+import { useHttp } from "@/api/http"
 
 const router = useRouter()
 const email = ref('')
@@ -172,6 +173,7 @@ const showPassword = ref(false)
 const rememberMe = ref(false)
 const loading = ref(false)
 const emailError = ref('')
+const http = useHttp()
 
 const validateEmail = () => {
   const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
@@ -202,8 +204,15 @@ const handleSubmit = async () => {
       loginPw: password.value,
     }
 
-    await useAuth.login(payload) // 액션 호출하여 데이터 가져오기
-    router.push('/')
+    const response = await useAuth.login(payload) // 액션 호출하여 데이터 가져오기
+
+    if (http.isOk(response)) {
+      router.push('/')
+    } else {
+      alert(http.getMessage(response))
+      return
+    }
+
   } catch (error) {
     console.error('Login failed:', error)
   } finally {
