@@ -61,6 +61,25 @@
               </button>
             </div>
 
+            <!-- 핸드폰번호 입력 -->
+            <div>
+              <label for="mobilePhoneNumber" class="sr-only">핸드폰번호</label>
+              <input 
+                id="mobilePhoneNumber" 
+                :value="mobilePhoneNumber"
+                @input="handlePhoneInput"
+                type="tel"
+                pattern="[0-9]{3}-[0-9]{4}-[0-9]{4}"
+                title="010-1234-5678"
+                maxlength="13"
+                required
+                aria-label="핸드폰번호 입력"
+                aria-required="true"
+                class="appearance-none relative block w-full px-4 py-3 border border-[#dadada] placeholder-[#929294] text-gray-900 rounded-[6px] sm:text-base hover:border-black focus:border-black focus:ring-0"
+                placeholder="010-1234-5678"
+              >
+            </div>
+
             <!-- 닉네임 입력 -->
             <div>
               <label for="nickname" class="sr-only">닉네임</label>
@@ -128,85 +147,83 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import { ref, computed } from 'vue'
+import { useRouter } from 'vue-router'
 import EyeOpenIcon from '@/components/icons/EyeOpenIcon.vue'
 import EyeClosedIcon from '@/components/icons/EyeClosedIcon.vue'
 import SpinnerIcon from '@/components/icons/SpinnerIcon.vue'
-import { useUser } from "@/store/user"
-import { useAuthStore } from "@/store/auth"
-import { useHttp } from "@/api/http"
+import { useUser } from '@/store/user'
+import { useAuthStore } from '@/store/auth'
+import { useHttp } from '@/api/http'
 
-
+const router = useRouter()
 const userStore = useUser()
 const useAuth = useAuthStore()
 const http = useHttp()
 
-export default {
-  name: 'UserJoinView',
-  components: {
-    EyeOpenIcon,
-    EyeClosedIcon,
-    SpinnerIcon
-  },
-  data: () => ({
-    nickname: '',
-    email: '',
-    password: '',
-    terms: false, // 이용약관 동의 여부 필드 (DB에 저장하는 값은 아님.)
-    visible: false,
-    loading: false
-  }),
-  computed: {
-    isFormValid() {
-      return this.nickname && this.email && this.password && this.terms
+// state
+const nickname = ref('')
+const email = ref('')
+const password = ref('')
+const mobilePhoneNumber = ref('')
+const terms = ref(false)
+const visible = ref(false)
+const loading = ref(false)
+
+// 전화번호 하이픈 처리
+function handlePhoneInput(event) {
+  const raw = event.target.value.replace(/[^0-9]/g, '')
+  if (raw.length <= 3) {
+    mobilePhoneNumber.value = raw
+  } else if (raw.length <= 7) {
+    mobilePhoneNumber.value = `${raw.slice(0, 3)}-${raw.slice(3)}`
+  } else {
+    mobilePhoneNumber.value = `${raw.slice(0, 3)}-${raw.slice(3, 7)}-${raw.slice(7, 11)}`
+  }
+}
+
+// 유효성 검사
+const isFormValid = computed(() =>
+  nickname.value &&
+  email.value &&
+  password.value &&
+  mobilePhoneNumber.value &&
+  terms.value
+)
+
+// 회원가입 처리
+async function onSubmit() {
+  if (!isFormValid.value || loading.value) return
+
+  loading.value = true
+  try {
+    const payloadJoin = {
+      userMail: email.value,
+      userPassword: password.value,
+      userNickname: nickname.value,
+      userMobilePhoneNumber: mobilePhoneNumber.value,
     }
-  },
-  methods: {
-    async onSubmit() {
-      if (!this.isFormValid || this.loading) return
 
-      this.loading = true
-      try {
-        // TODO: 실제 회원가입 API 호출
-        // await new Promise(resolve => setTimeout(resolve, 1500)) // 임시 딜레이
-        const payloadJoin = {
-          userMail: email.value,
-          userPassword: password.value,
-          userNickname: nickname.value,
-        }
+    const response = await userStore.userJoin(payloadJoin)
 
-        // console.log(payload)
-        // return
+    if (http.isOk(response)) {
+      alert('회원가입이 완료되었습니다.')
 
-        const response = await userStore.userJoin(payloadJoin) // 액션 호출하여 데이터 가져오기
-        // router.push('/')
-
-        if (http.isOk(response)) {
-
-          // 회원가입 성공 메시지
-          alert('회원가입이 완료되었습니다.')
-
-          // TODO: 실제 로그인 API 호출
-          // 회원가입 완료시 자동 로그인 처리
-          // await new Promise(resolve => setTimeout(resolve, 1000)) // 임시 딜레이
-          const payloadLogin = {
-            loginId: email.value,
-            loginPw: password.value,
-          }
-
-          await useAuth.login(payloadLogin) // 액션 호출하여 데이터 가져오기
-          this.$router.push('/')
-        } else {
-          alert(http.getMessage(response))
-          return
-        }
-
-      } catch (error) {
-        console.error('회원가입 실패:', error)
-      } finally {
-        this.loading = false
+      const payloadLogin = {
+        loginId: email.value,
+        loginPw: password.value,
       }
-    },
-  },
+
+      await useAuth.login(payloadLogin)
+      router.push('/')
+    } else {
+      alert(http.getMessage(response))
+    }
+  } catch (error) {
+    console.error('회원가입 실패:', error)
+  } finally {
+    loading.value = false
+  }
 }
 </script>
