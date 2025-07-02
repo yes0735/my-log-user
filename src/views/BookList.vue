@@ -149,6 +149,9 @@
     </div>
     <LogForm v-model="isLogFormVisible" :is-new="isNewForm" />
   </div>
+  <div class="text-center mt-6" v-if="!isLastPage">
+    <button class="px-4 py-2 border rounded text-blue-500 border-blue-500 hover:bg-blue-50" @click="loadNextPage">더보기</button>
+  </div>
 </template>
 
 <script setup>
@@ -328,15 +331,51 @@ const isNewForm = ref(true)
 
 const bookStore = useBook()
 
-const loadData = async () => {
-  // bookList.value = list
-  // originBookList.value = JSON.parse(JSON.stringify(bookList.value))
+//페이징 변수
+const currentPage = ref(0)           // 현재 페이지
+const pageSize = ref(12)             // 한 번에 가져올 개수
+const totalPages = ref(0)            // 총 페이지 수
+const isLastPage = ref(false)        // 마지막 페이지 여부
 
-  await bookStore.bookList() // bookList 액션 호출하여 데이터 가져오기
-  bookList.value = bookStore.data.result
-  originBookList.value = JSON.parse(JSON.stringify(bookList.value))
-  // console.log(bookStore.data.result)
+//나의 책 데이터 로드
+const isLoading = ref(false);
+
+const loadData = async () => {
+  if (isLoading.value) return; // 이미 호출 중이면 무시
+
+  isLoading.value = true;
+  try {
+    const res = await bookStore.bookList({
+      page: currentPage.value,
+      size: pageSize.value,
+    });
+    const result = res.result;
+
+    if (currentPage.value === 0) {
+      bookList.value = result.content;
+    } else {
+      bookList.value.push(...result.content);
+    }
+    totalPages.value = result.totalPages;
+    isLastPage.value = currentPage.value + 1 >= totalPages.value;
+  } finally {
+    isLoading.value = false;
+  }
 }
+
+onMounted(() => {
+  resetSelects();
+  currentPage.value = 0;
+  loadData();
+});
+
+
+ //다음 페이지 요청(더보기)
+const loadNextPage = () => {
+  currentPage.value += 1
+  loadData()
+}
+
 
 const processingData = (status) => {
   bookList.value = originBookList.value
@@ -366,9 +405,6 @@ const resetSelects = () => {
   orderSelected.value = "최신순"
 }
 
-onMounted(() => {
-  resetSelects()
-})
 
 const handleTabChange = (key) => {
   const tabInfo = tabList.find((tab) => tab.tabNo === key)
