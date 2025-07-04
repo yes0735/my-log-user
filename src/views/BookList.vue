@@ -149,7 +149,9 @@
     </div>
     <LogForm v-model="isLogFormVisible" :is-new="isNewForm" />
     <div class="text-center mt-6" v-if="!isLastPage">
-      <button class="px-4 py-2 border rounded text-blue-500 border-blue-500 hover:bg-blue-50" @click="loadNextPage">더보기</button>
+      <button class="px-4 py-2 border rounded text-blue-500 border-blue-500 hover:bg-blue-50" @click="loadNextPage">
+          더보기
+      </button>
     </div>  
   </div>
 
@@ -166,120 +168,120 @@ import { useHttp } from "@/api/http"
 import { useBook } from "@/store/book"
 import { storeToRefs } from "pinia"
 
-const list = [
-  {
-    bookNo: 1,
-    title: "읽기 전 책이름 (1)",
-    img: "",
-    rating: 0,
-    readingRate: 0,
-    status: "beforeReading",
-  },
-  {
-    bookNo: 2,
-    title: "소년이 온다",
-    img: "https://image.yes24.com/goods/13137546/XL",
-    rating: 5,
-    readingRate: 100,
-    status: "readingCompleted",
-  },
-  {
-    bookNo: 3,
-    title: "완독2",
-    img: "https://cdn.vuetifyjs.com/docs/images/cards/concert.jpg",
-    rating: 4.5,
-    readingRate: 100,
-    status: "readingCompleted",
-  },
-  {
-    bookNo: 4,
-    title: "읽기 전 책이름 (2)",
-    img: "https://cdn.vuetifyjs.com/docs/images/cards/hands.jpg",
-    rating: 0,
-    readingRate: 10,
-    status: "beforeReading",
-  },
-  {
-    bookNo: 5,
-    title: "읽기 전 책이름 (3)",
-    img: "https://cdn.vuetifyjs.com/images/cards/sunshine.jpg",
-    rating: 0,
-    readingRate: 55,
-    status: "beforeReading",
-  },
-  {
-    bookNo: 6,
-    title: "읽는 중 (1)",
-    img: "https://cdn.vuetifyjs.com/docs/images/cards/concert.jpg",
-    rating: 3,
-    readingRate: 78,
-    status: "reading",
-  },
-  {
-    bookNo: 7,
-    title: "읽는 중 (2)",
-    img: "https://cdn.vuetifyjs.com/docs/images/cards/hands.jpg",
-    rating: 2,
-    readingRate: 12,
-    status: "reading",
-  },
-  {
-    bookNo: 8,
-    title: "완독3",
-    img: "https://cdn.vuetifyjs.com/images/cards/sunshine.jpg",
-    rating: 1,
-    readingRate: 100,
-    status: "readingCompleted",
-  },
-  {
-    bookNo: 9,
-    title: "완독4",
-    img: "https://cdn.vuetifyjs.com/docs/images/cards/concert.jpg",
-    rating: 5,
-    readingRate: 100,
-    status: "readingCompleted",
-  },
-  {
-    bookNo: 10,
-    title: "읽는 중 (3)",
-    img: "https://cdn.vuetifyjs.com/docs/images/cards/concert.jpg",
-    rating: 2,
-    readingRate: 70,
-    status: "reading",
-  },
-  {
-    bookNo: 11,
-    title: "읽는 중 (4)",
-    img: "https://cdn.vuetifyjs.com/docs/images/cards/hands.jpg",
-    rating: 1,
-    readingRate: 10,
-    status: "reading",
-  },
-  {
-    bookNo: 12,
-    title: "읽기 전 책이름 (4)",
-    img: "https://cdn.vuetifyjs.com/images/cards/sunshine.jpg",
-    rating: 0,
-    readingRate: 0,
-    status: "beforeReading",
-  },
-  {
-    bookNo: 13,
-    title: "읽기 전 책이름 (5)",
-    img: "https://cdn.vuetifyjs.com/images/cards/sunshine.jpg",
-    rating: 0,
-    readingRate: 0,
-    status: "beforeReading",
-  },
-  {
-    bookNo: 14,
-    title: "읽기 전 책이름 (6)",
-    img: "https://cdn.vuetifyjs.com/images/cards/sunshine.jpg",
-    rating: 0,
-    readingRate: 0,
-    status: "beforeReading",
-  },
-]
+// const list = [
+//   {
+//     bookNo: 1,
+//     title: "읽기 전 책이름 (1)",
+//     img: "",
+//     rating: 0,
+//     readingRate: 0,
+//     status: "beforeReading",
+//   },
+//   {
+//     bookNo: 2,
+//     title: "소년이 온다",
+//     img: "https://image.yes24.com/goods/13137546/XL",
+//     rating: 5,
+//     readingRate: 100,
+//     status: "readingCompleted",
+//   },
+//   {
+//     bookNo: 3,
+//     title: "완독2",
+//     img: "https://cdn.vuetifyjs.com/docs/images/cards/concert.jpg",
+//     rating: 4.5,
+//     readingRate: 100,
+//     status: "readingCompleted",
+//   },
+//   {
+//     bookNo: 4,
+//     title: "읽기 전 책이름 (2)",
+//     img: "https://cdn.vuetifyjs.com/docs/images/cards/hands.jpg",
+//     rating: 0,
+//     readingRate: 10,
+//     status: "beforeReading",
+//   },
+//   {
+//     bookNo: 5,
+//     title: "읽기 전 책이름 (3)",
+//     img: "https://cdn.vuetifyjs.com/images/cards/sunshine.jpg",
+//     rating: 0,
+//     readingRate: 55,
+//     status: "beforeReading",
+//   },
+//   {
+//     bookNo: 6,
+//     title: "읽는 중 (1)",
+//     img: "https://cdn.vuetifyjs.com/docs/images/cards/concert.jpg",
+//     rating: 3,
+//     readingRate: 78,
+//     status: "reading",
+//   },
+//   {
+//     bookNo: 7,
+//     title: "읽는 중 (2)",
+//     img: "https://cdn.vuetifyjs.com/docs/images/cards/hands.jpg",
+//     rating: 2,
+//     readingRate: 12,
+//     status: "reading",
+//   },
+//   {
+//     bookNo: 8,
+//     title: "완독3",
+//     img: "https://cdn.vuetifyjs.com/images/cards/sunshine.jpg",
+//     rating: 1,
+//     readingRate: 100,
+//     status: "readingCompleted",
+//   },
+//   {
+//     bookNo: 9,
+//     title: "완독4",
+//     img: "https://cdn.vuetifyjs.com/docs/images/cards/concert.jpg",
+//     rating: 5,
+//     readingRate: 100,
+//     status: "readingCompleted",
+//   },
+//   {
+//     bookNo: 10,
+//     title: "읽는 중 (3)",
+//     img: "https://cdn.vuetifyjs.com/docs/images/cards/concert.jpg",
+//     rating: 2,
+//     readingRate: 70,
+//     status: "reading",
+//   },
+//   {
+//     bookNo: 11,
+//     title: "읽는 중 (4)",
+//     img: "https://cdn.vuetifyjs.com/docs/images/cards/hands.jpg",
+//     rating: 1,
+//     readingRate: 10,
+//     status: "reading",
+//   },
+//   {
+//     bookNo: 12,
+//     title: "읽기 전 책이름 (4)",
+//     img: "https://cdn.vuetifyjs.com/images/cards/sunshine.jpg",
+//     rating: 0,
+//     readingRate: 0,
+//     status: "beforeReading",
+//   },
+//   {
+//     bookNo: 13,
+//     title: "읽기 전 책이름 (5)",
+//     img: "https://cdn.vuetifyjs.com/images/cards/sunshine.jpg",
+//     rating: 0,
+//     readingRate: 0,
+//     status: "beforeReading",
+//   },
+//   {
+//     bookNo: 14,
+//     title: "읽기 전 책이름 (6)",
+//     img: "https://cdn.vuetifyjs.com/images/cards/sunshine.jpg",
+//     rating: 0,
+//     readingRate: 0,
+//     status: "beforeReading",
+//   },
+// ]
 
 const tabList = [
   {
@@ -341,8 +343,7 @@ const isLastPage = ref(false)        // 마지막 페이지 여부
 //나의 책 데이터 로드
 const isLoading = ref(false);
 
-
-const loadData = async () => {
+const loadData = async (readStatus=null) => {
   if (isLoading.value) return; // 이미 호출 중이면 무시
 
   isLoading.value = true;
@@ -350,15 +351,16 @@ const loadData = async () => {
     const res = await bookStore.bookList({
       page: currentPage.value,
       size: pageSize.value,
+      readStatus: readStatus === "all" ? null : readStatus
     });
     const result = res.result;
 
     if (currentPage.value === 0) {
-      bookList.value = result.content;
+      bookList.value = result.content;// 첫 페이지면 덮어쓰기
     } else {
-      bookList.value.push(...result.content);
+        bookList.value.push(...result.content); // 다음 페이지면 이어붙이기
     }
-    totalPages.value = result.totalPages;
+    totalPages.value = result.page.totalPages;
     isLastPage.value = currentPage.value + 1 >= totalPages.value;
   } finally {
     isLoading.value = false;
@@ -368,14 +370,18 @@ const loadData = async () => {
 onMounted(() => {
   resetSelects();
   currentPage.value = 0;
-  loadData();
-});
 
+  // 기본 탭의 tabName 찾아서 넘기기 (예: "all")
+  const defaultTab = tabList.find(t => t.tabNo === tab.value);
+  loadData(defaultTab?.tabName || "all");
+});
 
  //다음 페이지 요청(더보기)
 const loadNextPage = () => {
   currentPage.value += 1
-  loadData()
+  const currentTabInfo = tabList.find(t => t.tabNo === tab.value);
+  const readStatus = currentTabInfo ? currentTabInfo.tabName : "all";
+  loadData(readStatus);
 }
 
 
@@ -412,7 +418,11 @@ const handleTabChange = (key) => {
   const tabInfo = tabList.find((tab) => tab.tabNo === key)
   if (tabInfo) {
     resetSelects()
-    processingData(tabInfo.tabName)
+    tab.value=key
+    currentPage.value=0
+    bookList.value=[]
+    loadData(tabInfo.tabName)
+    //processingData(tabInfo.tabName)->프론트 필터링
   }
 }
 
