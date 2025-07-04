@@ -1,3 +1,4 @@
+
 <template>
   <div class="w-full mx-auto pb-10">
     <ContentsCover />
@@ -35,7 +36,7 @@
               </a-select-option>
             </a-select>
 
-            <a-select
+            <!-- <a-select
               v-model:value="categorySelected"
               style="width: 150px"
               placeholder="분야"
@@ -47,7 +48,7 @@
               >
                 {{ category.categoryDisplayName }}
               </a-select-option>
-            </a-select>
+            </a-select> -->
 
             <a-select
               v-model:value="orderSelected"
@@ -162,8 +163,9 @@ import ContentsCover from "@/components/common/ContentsCover.vue"
 import LogForm from "@/components/common/LogForm.vue"
 import StarRating from "@/components/common/StarRating.vue"
 
+
 import { CloseOutlined } from "@ant-design/icons-vue"
-import { ref, onMounted } from "vue"
+import { ref, onMounted, watch } from "vue"
 import { useHttp } from "@/api/http"
 import { useBook } from "@/store/book"
 import { storeToRefs } from "pinia"
@@ -310,24 +312,29 @@ const tab = ref(1)
 const originBookList = ref([])
 const bookList = ref([])
 const http = useHttp()
+
 const readingTypeSelectList = ref([
-  { readingDisplayName: "전체", readingName: "all" },
-  { readingDisplayName: "소장", readingName: "paper_book" },
+  { readingDisplayName: "소장유형", readingName: "all" },
+  { readingDisplayName: "종이책", readingName: "paper_book" },
   { readingDisplayName: "eBook", readingName: "ebook" },
+  { readingDisplayName: "구매예정", readingName: "pending" },
 ])
-const readingTypeSelected = ref("")
-const categorySelectList = ref([
-  { categoryDisplayName: "전체", categoryName: "all" },
-  { categoryDisplayName: "소설", categoryName: "novel" },
-  { categoryDisplayName: "장르소설", categoryName: "genreNovel" },
-  { categoryDisplayName: "에세이", categoryName: "essay" },
-])
-const categorySelected = ref("")
+const readingTypeSelected = ref("all")
+
+// const categorySelectList = ref([
+//   { categoryDisplayName: "전체", categoryName: "all" },
+//   { categoryDisplayName: "소설", categoryName: "novel" },
+//   { categoryDisplayName: "장르소설", categoryName: "genreNovel" },
+//   { categoryDisplayName: "에세이", categoryName: "essay" },
+// ])
+// const categorySelected = ref("")
+
 const orderSelectList = ref([
   { orderDisplayName: "최신순", orderName: "latestOrder" },
-  { orderDisplayName: "별점순", orderName: "starRatingOrder" },
+  { orderDisplayName: "별점순", orderName: "scope" },
 ])
-const orderSelected = ref("")
+const orderSelected = ref("latestOrder")
+
 const transparent = ref("rgba(255, 255, 255, 0)")
 const isLogFormVisible = ref(false)
 const isNewForm = ref(true)
@@ -342,7 +349,7 @@ const isLastPage = ref(false)        // 마지막 페이지 여부
 
 //나의 책 데이터 로드
 const isLoading = ref(false);
-
+console.log(orderSelected.value) 
 const loadData = async (readStatus=null) => {
   if (isLoading.value) return; // 이미 호출 중이면 무시
 
@@ -351,7 +358,9 @@ const loadData = async (readStatus=null) => {
     const res = await bookStore.bookList({
       page: currentPage.value,
       size: pageSize.value,
-      readStatus: readStatus === "all" ? null : readStatus
+      readStatus: readStatus === "all" ? null : readStatus,
+      collectionType: readingTypeSelected.value === "all" ? null : readingTypeSelected.value,
+      sortBy: orderSelected.value,
     });
     const result = res.result;
 
@@ -409,10 +418,25 @@ const deleteBook = async (bookInfo) => {
 
 const resetSelects = () => {
   readingTypeSelected.value = "all"
-  categorySelected.value = "all"
+  //categorySelected.value = "all"
   orderSelected.value = "최신순"
 }
 
+// 소장 유형 변경 시
+watch(readingTypeSelected, () => {
+  currentPage.value = 0
+  const currentTabInfo = tabList.find(t => t.tabNo === tab.value)
+  bookList.value = []
+  loadData(currentTabInfo?.tabName || "all")
+})
+
+// 정렬 순서 변경 시
+watch(orderSelected, () => {
+  currentPage.value = 0
+  const currentTabInfo = tabList.find(t => t.tabNo === tab.value)
+  bookList.value = []
+  loadData(currentTabInfo?.tabName || "all")
+})
 
 const handleTabChange = (key) => {
   const tabInfo = tabList.find((tab) => tab.tabNo === key)
