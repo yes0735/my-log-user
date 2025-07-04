@@ -7,13 +7,13 @@ export const useBook = defineStore('book', {
   }),
 actions: {
   async bookList(params = {}) {  // params 기본값 빈 객체로
-    console.log('params:', params);
+    console.log('params:', params)
     const http = useHttp()
 
     try {
-      console.log('params:', params);
-      const response = await http.get('/book', { params })  // params 전달
-      console.log('bookList 호출 - response:', response);
+      console.log('params:', params)
+      const response = await http.get('/book',params)  // params 전달
+      console.log('bookList 호출 - response:', response)
       this.data = response
       return response  // 호출부에서 결과를 바로 쓸 수 있도록
     } catch (error) {

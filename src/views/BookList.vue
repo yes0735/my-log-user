@@ -148,10 +148,11 @@
       </a-tabs>
     </div>
     <LogForm v-model="isLogFormVisible" :is-new="isNewForm" />
+    <div class="text-center mt-6" v-if="!isLastPage">
+      <button class="px-4 py-2 border rounded text-blue-500 border-blue-500 hover:bg-blue-50" @click="loadNextPage">더보기</button>
+    </div>  
   </div>
-  <div class="text-center mt-6" v-if="!isLastPage">
-    <button class="px-4 py-2 border rounded text-blue-500 border-blue-500 hover:bg-blue-50" @click="loadNextPage">더보기</button>
-  </div>
+
 </template>
 
 <script setup>
@@ -339,6 +340,7 @@ const isLastPage = ref(false)        // 마지막 페이지 여부
 
 //나의 책 데이터 로드
 const isLoading = ref(false);
+
 
 const loadData = async () => {
   if (isLoading.value) return; // 이미 호출 중이면 무시
