@@ -154,6 +154,7 @@
           더보기
       </button>
     </div>  
+    <BookSearchForm v-model="isBookSearchFormVisible" :is-new="isNewForm" />
   </div>
 
 </template>
@@ -161,6 +162,7 @@
 <script setup>
 import ContentsCover from "@/components/common/ContentsCover.vue"
 import LogForm from "@/components/common/LogForm.vue"
+import BookSearchForm from "@/components/common/BookSearchForm.vue"
 import StarRating from "@/components/common/StarRating.vue"
 
 
@@ -337,6 +339,7 @@ const orderSelected = ref("latestOrder")
 
 const transparent = ref("rgba(255, 255, 255, 0)")
 const isLogFormVisible = ref(false)
+const isBookSearchFormVisible = ref(false)
 const isNewForm = ref(true)
 
 const bookStore = useBook()
@@ -452,7 +455,7 @@ const handleTabChange = (key) => {
 
 const openNewForm = () => {
   isNewForm.value = true
-  isLogFormVisible.value = true
+  isBookSearchFormVisible.value = true
 }
 
 const openEditForm = (book) => {
