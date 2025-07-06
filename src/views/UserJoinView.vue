@@ -61,6 +61,45 @@
               </button>
             </div>
 
+            <!-- 비밀번호 재입력 -->
+            <div class="relative">
+              <label for="passwordConfirm" class="sr-only">비밀번호</label>
+              <input 
+                id="passwordConfirm" 
+                v-model="passwordConfirm"
+                :type="visibleConfirm ? 'text' : 'password'"
+                required
+                aria-label="비밀번호 재입력"
+                aria-required="true"
+                pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{8,}$"
+                title="비밀번호는 영문 대/소문자, 숫자, 특수문자(@$!%*?&#)를 각각 1개 이상 포함한 8자 이상이어야 합니다."
+                class="appearance-none relative block w-full px-4 pr-12 py-3 border border-[#dadada] placeholder-[#929294] text-gray-900 rounded-[6px] sm:text-base hover:border-black focus:border-black focus:ring-0"
+                placeholder="비밀번호 재입력"
+              >
+              <button 
+                type="button"
+                @click="visibleConfirm = !visibleConfirm"
+                class="absolute inset-y-0 right-0 px-4 flex items-center justify-center"
+                :aria-label="visibleConfirm ? '비밀번호 숨기기' : '비밀번호 표시'"
+              >
+                <EyeOpenIcon 
+                  v-if="visibleConfirm"
+                  :color="visibleConfirm ? 'black' : 'gray'"
+                  class="pointer-events-none"
+                  aria-hidden="true"
+                />
+                <EyeClosedIcon 
+                  v-else
+                  :color="visibleConfirm ? 'black' : 'gray'"
+                  class="pointer-events-none"
+                  aria-hidden="true"
+                />
+              </button>
+            </div>
+            <p v-if="passwordError" class="text-sm text-red-500 mt-1">
+              {{ passwordError }}
+            </p>
+
             <!-- 핸드폰번호 입력 -->
             <div>
               <label for="mobilePhoneNumber" class="sr-only">핸드폰번호</label>
@@ -117,7 +156,7 @@
           <div class="mt-6">
             <button
               type="submit"
-              :disabled="!isFormValid || loading"
+              :disabled="!isFormValid || loading || !isPasswordMatch"
               class="group relative w-full flex justify-center py-3 px-4 border border-transparent text-base font-medium rounded-[6px] text-white bg-black hover:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black disabled:opacity-50 disabled:cursor-not-allowed"
               aria-label="회원가입"
               :aria-busy="loading"
@@ -166,9 +205,11 @@ const http = useHttp()
 const nickname = ref('')
 const email = ref('')
 const password = ref('')
+const passwordConfirm = ref('')
 const mobilePhoneNumber = ref('')
 const terms = ref(false)
 const visible = ref(false)
+const visibleConfirm = ref(false)
 const loading = ref(false)
 
 // 전화번호 하이픈 처리
@@ -188,9 +229,21 @@ const isFormValid = computed(() =>
   nickname.value &&
   email.value &&
   password.value &&
+  passwordConfirm.value &&
   mobilePhoneNumber.value &&
   terms.value
 )
+
+// 비밀번호 검증
+const isPasswordMatch = computed(() => {
+  return password.value && passwordConfirm.value && password.value === passwordConfirm.value
+})
+
+const passwordError = computed(() => {
+  if (!passwordConfirm.value) return ''
+  if (isPasswordMatch.value) return ''
+  return '비밀번호가 일치하지 않습니다.'
+})
 
 // 회원가입 처리
 async function onSubmit() {
@@ -201,6 +254,7 @@ async function onSubmit() {
     const payloadJoin = {
       userMail: email.value,
       userPassword: password.value,
+      userPasswordConfirm: passwordConfirm.value,
       userNickname: nickname.value,
       userMobilePhoneNumber: mobilePhoneNumber.value,
     }
