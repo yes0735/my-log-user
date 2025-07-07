@@ -332,10 +332,10 @@ const readingTypeSelected = ref("all")
 // const categorySelected = ref("")
 
 const orderSelectList = ref([
-  { orderDisplayName: "최신순", orderName: "latestOrder" },
+  { orderDisplayName: "최신순", orderName: "registrationDatetime" },
   { orderDisplayName: "별점순", orderName: "scope" },
 ])
-const orderSelected = ref("latestOrder")
+const orderSelected = ref("registrationDatetime")
 
 const transparent = ref("rgba(255, 255, 255, 0)")
 const isLogFormVisible = ref(false)
