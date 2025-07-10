@@ -80,26 +80,9 @@
                     @click="goToDetail(item)"
                   >
                     <img
-                      v-if="item.cover"
                       :src="item.cover"
                       alt="썸네일"
                     />
-                    <div v-else class="no-image-icon">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="28"
-                        height="28"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="#ffffff"
-                        stroke-width="1.5"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                      >
-                        <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h3l2-3h8l2 3h3a2 2 0 0 1 2 2z" />
-                        <circle cx="12" cy="13" r="4" />
-                      </svg>
-                    </div>
                     
                     <div class="content flex flex-col space-y-1">
                       <h3 class="title max-w-full md:w-[400px] font-semibold text-base text-gray-900 truncate">
@@ -346,17 +329,6 @@ button {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-}
-
-.no-image-icon {
-  width: 80px;
-  height: 80px;
-  background-color: #d1d5db; /* 연회색 배경 */
-  border-radius: 50%; /* 원형 */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
 }
 
 /* 책 검색 영역 */

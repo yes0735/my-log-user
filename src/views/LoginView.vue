@@ -90,7 +90,7 @@
           </div>
 
           <!-- 추가 옵션 -->
-          <div class="mt-3 flex items-center justify-between text-sm text-[#888]">
+          <!-- <div class="mt-3 flex items-center justify-between text-sm text-[#888]">
             <div class="flex items-center">
               <input 
                 id="remember-me" 
@@ -103,7 +103,7 @@
                 로그인 상태 유지
               </label>
             </div>
-          </div>
+          </div> -->
 
           <!-- 로그인 버튼 -->
           <div class="mt-4">
