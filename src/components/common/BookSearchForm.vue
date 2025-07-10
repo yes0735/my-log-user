@@ -19,12 +19,12 @@
         <div class="flex flex-col gap-2 p-4 border-b shrink-0">
           <div class="form-group flex items-center">
             <a-select
-              v-model:value="readingTypeSelected"
+              v-model:value="searchTargetSelected"
               style="width: 150px"
               placeholder="검색어 종류"
             >
               <a-select-option
-                v-for="type in readingTypeSelectList"
+                v-for="type in searchTargetSelectList"
                 :key="type.readingName"
                 :value="type.readingName"
               >
@@ -102,7 +102,7 @@
                     </div>
                     
                     <div class="content flex flex-col space-y-1">
-                      <h3 class="title max-w-full md:w-[300px] font-semibold text-base text-gray-900 truncate">
+                      <h3 class="title max-w-full md:w-[400px] font-semibold text-base text-gray-900 truncate">
                         {{ item.title }}
                       </h3>
 
@@ -110,25 +110,25 @@
                       <div
                         class="info-line flex flex-col md:flex-row gap-x-2 gap-y-1 text-sm text-gray-500"
                       >
-                        <span class="truncate max-w-full md:w-[250px]">저자: {{ item.author }}</span>
+                        <span class="truncate max-w-full md:w-[400px]">저자: {{ item.author }}</span>
                         <!-- <span class="hidden md:inline font-bold">|</span> -->
-                        <span class="truncate max-w-full md:max-w-[120px]">출판사: {{ item.publisher }}</span>
                       </div>
 
                       <!-- 줄 2 -->
                       <div
                         class="info-line flex flex-col md:flex-row gap-x-2 gap-y-1 text-sm text-gray-500"
                       >
-                        <span class="truncate max-w-full md:w-[250px]">출간일: {{ formatDate(item.pubDate) }}</span>
-                        <!-- <span class="hidden md:inline font-bold">|</span> -->
-                        <span class="truncate max-w-full md:max-w-[120px]">판매가: {{ item.priceSales.toLocaleString() }}원</span>
+                        <span class="truncate max-w-full md:max-w-[400px]">출판사: {{ item.publisher }}</span>
                       </div>
 
                       <!-- 줄 3 -->
                       <div
                         class="info-line flex flex-col md:flex-row gap-x-2 gap-y-1 text-sm text-gray-500"
                       >
-                        <span class="truncate max-w-full md:w-[250px]">ISBN: {{ item.isbn }}</span>
+                        <span class="truncate max-w-full md:w-[400px]">출간일: {{ formatDate(item.pubDate) }}</span>
+                        <!-- <span class="hidden md:inline font-bold">|</span> -->
+                        <!-- <span class="truncate max-w-full md:max-w-[120px]">판매가: {{ item.priceSales.toLocaleString() }}원</span> -->
+                        <!-- <span class="truncate max-w-full md:w-[250px]">ISBN: {{ item.isbn }}</span> -->
                       </div>
                     </div>
                     
@@ -197,13 +197,12 @@ const loading = ref(false)
 const items = ref([])
 const totalResults = ref(0)
 const searchValue = ref("")
-const readingTypeSelected = ref("Title")
+const searchTargetSelected = ref("Book")
 // 독서 유형
-const readingTypeSelectList = ref([
-  { readingDisplayName: "제목검색", readingName: "Title" },
-  { readingDisplayName: "제목+저자", readingName: "Keyword" },
-  { readingDisplayName: "저자검색", readingName: "Author" },
-  { readingDisplayName: "출판사검색", readingName: "Publisher" },
+const searchTargetSelectList = ref([
+  { readingDisplayName: "국내도서", readingName: "Book" },
+  { readingDisplayName: "외국도서", readingName: "Foreign" },
+  { readingDisplayName: "전자책(eBook)", readingName: "eBook" }
 ])
 
 // 스크롤 잠금 훅 사용
@@ -212,7 +211,7 @@ const { lock, unlock } = useScrollLock()
 // 초기화 함수 수정
 const resetForm = () => {
   searchValue.value = ""
-  readingTypeSelected.value = "Title"
+  searchTargetSelected.value = "Book"
   items.value = []
   totalResults.value = 0
 }
@@ -239,7 +238,7 @@ const closeForm = () => {
 
 // 유효성 검사
 const isFormValid = computed(() =>
-  readingTypeSelected.value &&
+searchTargetSelected.value &&
   searchValue.value
 )
 
@@ -249,7 +248,7 @@ async function saveContent() {
   loading.value = true
   try {
     const payload = {
-      searchType: readingTypeSelected.value,
+      searchType: searchTargetSelected.value,
       searchValue: searchValue.value,
     }
 
