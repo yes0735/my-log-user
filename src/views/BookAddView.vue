@@ -35,7 +35,55 @@
             <!-- 기본 항목들 -->
             <div class="space-y-2 border-b border-gray-200">
               <div class="space-y-2">
-                <!-- 1. 책 제목 -->
+                <!-- 1. 책 커버 이미지 첨부 -->
+                <div class="form-group flex items-start py-2">
+                    <div class="flex items-center gap-2 w-32 pt-2">
+                        <InputIcons type="text" class="w-4 h-4 text-gray-400" />
+                        <label class="text-sm font-medium text-gray-700"
+                            >책 커버</label
+                        >
+                        </div>
+                        <div class="flex-1 flex items-start gap-4">
+                        <!-- 이미지 미리보기 -->
+                        <div
+                            v-if="imagePreview"
+                            class="relative w-16 h-20 shrink-0 z-10"
+                        >
+                            <img
+                            :src="imagePreview"
+                            class="w-full h-full object-cover rounded-md border border-gray-200"
+                            alt="Cover preview"
+                            />
+                            <button
+                            @click="removeImage"
+                            class="absolute -top-2 -right-2 p-1 bg-white rounded-full shadow-sm border border-gray-200 hover:bg-gray-50"
+                            >
+                            <CloseIcon size="sm" />
+                            </button>
+                        </div>
+
+                        <!-- 파일 입력 -->
+                        <div class="flex-1">
+                            <label
+                            class="inline-flex w-full items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 cursor-pointer"
+                            >
+                            <ImageIcon class="mr-2" />
+                            {{ imagePreview ? "이미지 변경" : "이미지 선택" }}
+                            <input
+                                type="file"
+                                @change="handleImageUpload"
+                                accept="image/*"
+                                class="hidden"
+                            />
+                            </label>
+                            <p class="mt-1 text-xs text-gray-500">
+                            PNG, JPG, GIF 파일 (최대 2MB)
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. 책 제목 -->
                 <div class="form-group flex items-center">
                   <div class="flex items-center gap-2 w-32">
                     <InputIcons type="text" class="w-4 h-4 text-gray-400" />
@@ -46,11 +94,12 @@
                   <input
                     type="text"
                     v-model="bookInfo.bookTitle"
-                    class="flex-1 px-3 rounded-md border border-gray-300 shadow-sm focus:border-black focus:ring-black"
+                    class="flex-1 px-3 py-2 rounded-md hover:bg-gray-100 focus:bg-gray-100 focus:outline-none text-gray-700"
+                    placeholder="비어있음"
                   />
                 </div>
 
-                <!-- 2. 저자 -->
+                <!-- 3. 저자 -->
                 <div class="form-group flex items-center">
                   <div class="flex items-center gap-2 w-32">
                     <InputIcons type="text" class="w-4 h-4 text-gray-400" />
@@ -61,11 +110,12 @@
                   <input
                     type="text"
                     v-model="bookInfo.author"
-                    class="flex-1 px-3 rounded-md border border-gray-300 shadow-sm focus:border-black focus:ring-black"
+                    class="flex-1 px-3 py-2 rounded-md hover:bg-gray-100 focus:bg-gray-100 focus:outline-none text-gray-700"
+                    placeholder="비어있음"
                   />
                 </div>
 
-                <!-- 3. 출판사 -->
+                <!-- 4. 출판사 -->
                 <div class="form-group flex items-center">
                     <div class="flex items-center gap-2 w-32">
                     <InputIcons type="text" class="w-4 h-4 text-gray-400" />
@@ -76,11 +126,12 @@
                     <input
                     type="text"
                     v-model="bookInfo.publisher"
-                    class="flex-1 px-3 rounded-md border border-gray-300 shadow-sm focus:border-black focus:ring-black"
+                    class="flex-1 px-3 py-2 rounded-md hover:bg-gray-100 focus:bg-gray-100 focus:outline-none text-gray-700"
+                    placeholder="비어있음"
                     />
                 </div>
 
-                <!-- 4. 분야 -->
+                <!-- 5. 분야 -->
                 <div class="form-group flex items-center">
                   <div class="flex items-center gap-2 w-32">
                     <InputIcons type="text" class="w-4 h-4 text-gray-400" />
@@ -91,58 +142,10 @@
                   <input
                     type="text"
                     v-model="bookInfo.category"
-                    class="flex-1 px-3 rounded-md border border-gray-300 shadow-sm focus:border-black focus:ring-black"
+                    class="flex-1 px-3 py-2 rounded-md hover:bg-gray-100 focus:bg-gray-100 focus:outline-none text-gray-700"
+                    placeholder="비어있음"
                   />
                 </div>
-
-                <!-- 5. 책 커버 이미지 첨부 -->
-                <div class="form-group flex items-start py-2">
-                    <div class="flex items-center gap-2 w-32 pt-2">
-                    <InputIcons type="text" class="w-4 h-4 text-gray-400" />
-                    <label class="text-sm font-medium text-gray-700"
-                        >책 커버</label
-                    >
-                    </div>
-                    <div class="flex-1 flex items-start gap-4">
-                    <!-- 이미지 미리보기 -->
-                    <div
-                        v-if="imagePreview"
-                        class="relative w-16 h-20 shrink-0 z-10"
-                    >
-                        <img
-                        :src="imagePreview"
-                        class="w-full h-full object-cover rounded-md border border-gray-200"
-                        alt="Cover preview"
-                        />
-                        <button
-                        @click="removeImage"
-                        class="absolute -top-2 -right-2 p-1 bg-white rounded-full shadow-sm border border-gray-200 hover:bg-gray-50"
-                        >
-                        <CloseIcon size="sm" />
-                        </button>
-                    </div>
-
-                    <!-- 파일 입력 -->
-                    <div class="flex-1">
-                        <label
-                        class="inline-flex w-full items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 cursor-pointer"
-                        >
-                        <ImageIcon class="mr-2" />
-                        {{ imagePreview ? "이미지 변경" : "이미지 선택" }}
-                        <input
-                            type="file"
-                            @change="handleImageUpload"
-                            accept="image/*"
-                            class="hidden"
-                        />
-                        </label>
-                        <p class="mt-1 text-xs text-gray-500">
-                        PNG, JPG, GIF 파일 (최대 2MB)
-                        </p>
-                    </div>
-                    </div>
-                </div>
-
 
 
                 <!-- 6. 소장 유형 -->
@@ -153,11 +156,12 @@
                       >소장 유형</label
                     >
                   </div>
+  
                   <div class="flex-1 relative">
                     <button
                       type="button"
                       @click="toggleDropdown('collectionType')"
-                      class="w-full px-3 py-2 text-left text-sm rounded-md border border-gray-300 focus:outline-none focus:ring-1 focus:ring-black focus:border-black bg-white flex justify-between items-center"
+                      class="w-full px-3 py-2 text-left text-sm rounded-md hover:bg-gray-100 focus:bg-gray-100 focus:outline-none text-gray-700 flex justify-between items-center"
                     >
                       <span class="text-gray-700">
                         {{
@@ -202,7 +206,7 @@
                     <button
                       type="button"
                       @click="toggleDropdown('readStatus')"
-                      class="w-full px-3 py-2 text-left text-sm rounded-md border border-gray-300 focus:outline-none focus:ring-1 focus:ring-black focus:border-black bg-white flex justify-between items-center"
+                      class="w-full px-3 py-2 text-left text-sm rounded-md hover:bg-gray-100 focus:bg-gray-100 focus:outline-none text-gray-700 flex justify-between items-center"
                     >
                       <span class="text-gray-700">
                         {{ getSelectedLabel("readStatus", statusOptions) }}
@@ -244,7 +248,7 @@
                 <input
                 type="date"
                 v-model="bookInfo.readStartDate"
-                class="flex-1 px-3 rounded-md border border-gray-300 shadow-sm focus:border-black focus:ring-black"
+                class="flex-1 px-3 py-2 rounded-md hover:bg-gray-100 focus:bg-gray-100 focus:outline-none text-gray-700"
                 />
             </div>
 
@@ -259,7 +263,7 @@
                 <input
                 type="date"
                 v-model="bookInfo.readEndDate"
-                class="flex-1 px-3 rounded-md border border-gray-300 shadow-sm focus:border-black focus:ring-black"
+                class="flex-1 px-3 py-2 rounded-md hover:bg-gray-100 focus:bg-gray-100 focus:outline-none text-gray-700"
                 />
             </div>
 
@@ -274,7 +278,8 @@
                 <input
                 type="number"
                 v-model="bookInfo.totalPages"
-                class="flex-1 px-3 rounded-md border border-gray-300 shadow-sm focus:border-black focus:ring-black"
+                class="flex-1 px-3 py-2 rounded-md hover:bg-gray-100 focus:bg-gray-100 focus:outline-none text-gray-700"
+                placeholder="비어있음"
                 />
             </div>
 
@@ -289,7 +294,8 @@
                 <input
                 type="number"
                 v-model="bookInfo.readPage"
-                class="flex-1 px-3 rounded-md border border-gray-300 shadow-sm focus:border-black focus:ring-black"
+                class="flex-1 px-3 py-2 rounded-md hover:bg-gray-100 focus:bg-gray-100 focus:outline-none text-gray-700"
+                placeholder="비어있음"
                 />
             </div>
 
@@ -312,7 +318,7 @@
                 <div v-for="(block, index) in blocks" :key="index" class="relative mb-4">
                     <textarea
                         v-model="block.content"
-                        class="w-full p-3 resize-none rounded-md border border-gray-300 shadow-sm focus:border-black focus:ring-black"
+                        class="w-full p-3 resize-none rounded-md hover:bg-gray-100 focus:bg-gray-100 focus:outline-none text-gray-700"
                         rows="4"
                         placeholder="내용을 입력하세요."
                         @input="autoResizeTextarea"
@@ -382,13 +388,13 @@ const bookInfo = reactive({
   author: "",
   category: "",
   scope: 0,
-  collectionType: "paper_book",
-  readStatus: "reading",
+  collectionType: "선택하세요",
+  readStatus: "선택하세요",
   publisher: "",
   readStartDate: new Date().toISOString().split("T")[0],
   readEndDate: "",
-  readPage: 0,
-  totalPages: 0,
+  readPage: null,
+  totalPages: null,
   coverImage: null,
 })
 
@@ -402,8 +408,8 @@ const resetForm = () => {
   bookInfo.publisher = ""
   bookInfo.readStartDate = new Date().toISOString().split("T")[0]
   bookInfo.readEndDate = ""
-  bookInfo.readPage = 0
-  bookInfo.totalPages = 0
+  bookInfo.readPage = null
+  bookInfo.totalPages = null
   bookInfo.coverImage = null
   blocks.value = [{ content: "" }]
   textareaRefs.length = 0
@@ -555,6 +561,7 @@ const statusOptions = [
   { value: "reading", label: "읽는 중" },
   { value: "finished", label: "완독" },
 ]
+
 </script>
 
 

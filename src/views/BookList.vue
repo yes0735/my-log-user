@@ -274,13 +274,20 @@ const deleteBook = async (bookInfo) => {
     okText: "삭제",
     cancelText: "취소",
     okType: "danger",
-    onOk: () => {
-      bookList.value = bookList.value.filter(
-        (book) => book.bookNo !== bookInfo.bookNo
-      )
+    onOk: async () => {
+      try {
+        await http.delete(`/book/${bookInfo.bookNo}`) // 실제 삭제 API
+        bookList.value = bookList.value.filter(
+          (book) => book.bookNo !== bookInfo.bookNo
+        )
+      } catch (err) {
+        console.error("삭제 실패:", err)
+        alert("삭제 중 문제가 발생했습니다.")
+      }
     },
   })
 }
+
 
 const resetSelects = () => {
   readingTypeSelected.value = "all"
