@@ -40,6 +40,12 @@ const routes = [
       code: 404,
     },
   },
+    {
+    path: "/book/new",
+    name: "AboutPage",
+    component: () => import("@/views/BookAddView.vue"),
+    meta: { requiresAuth: true, isMenu: true, dark: true },
+  },
   {
     path: "/:pathMatch(.*)*",
     name: "Error403",

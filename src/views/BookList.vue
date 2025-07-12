@@ -172,121 +172,6 @@ import { useHttp } from "@/api/http"
 import { useBook } from "@/store/book"
 import { storeToRefs } from "pinia"
 
-// const list = [
-//   {
-//     bookNo: 1,
-//     title: "읽기 전 책이름 (1)",
-//     img: "",
-//     rating: 0,
-//     readingRate: 0,
-//     status: "beforeReading",
-//   },
-//   {
-//     bookNo: 2,
-//     title: "소년이 온다",
-//     img: "https://image.yes24.com/goods/13137546/XL",
-//     rating: 5,
-//     readingRate: 100,
-//     status: "readingCompleted",
-//   },
-//   {
-//     bookNo: 3,
-//     title: "완독2",
-//     img: "https://cdn.vuetifyjs.com/docs/images/cards/concert.jpg",
-//     rating: 4.5,
-//     readingRate: 100,
-//     status: "readingCompleted",
-//   },
-//   {
-//     bookNo: 4,
-//     title: "읽기 전 책이름 (2)",
-//     img: "https://cdn.vuetifyjs.com/docs/images/cards/hands.jpg",
-//     rating: 0,
-//     readingRate: 10,
-//     status: "beforeReading",
-//   },
-//   {
-//     bookNo: 5,
-//     title: "읽기 전 책이름 (3)",
-//     img: "https://cdn.vuetifyjs.com/images/cards/sunshine.jpg",
-//     rating: 0,
-//     readingRate: 55,
-//     status: "beforeReading",
-//   },
-//   {
-//     bookNo: 6,
-//     title: "읽는 중 (1)",
-//     img: "https://cdn.vuetifyjs.com/docs/images/cards/concert.jpg",
-//     rating: 3,
-//     readingRate: 78,
-//     status: "reading",
-//   },
-//   {
-//     bookNo: 7,
-//     title: "읽는 중 (2)",
-//     img: "https://cdn.vuetifyjs.com/docs/images/cards/hands.jpg",
-//     rating: 2,
-//     readingRate: 12,
-//     status: "reading",
-//   },
-//   {
-//     bookNo: 8,
-//     title: "완독3",
-//     img: "https://cdn.vuetifyjs.com/images/cards/sunshine.jpg",
-//     rating: 1,
-//     readingRate: 100,
-//     status: "readingCompleted",
-//   },
-//   {
-//     bookNo: 9,
-//     title: "완독4",
-//     img: "https://cdn.vuetifyjs.com/docs/images/cards/concert.jpg",
-//     rating: 5,
-//     readingRate: 100,
-//     status: "readingCompleted",
-//   },
-//   {
-//     bookNo: 10,
-//     title: "읽는 중 (3)",
-//     img: "https://cdn.vuetifyjs.com/docs/images/cards/concert.jpg",
-//     rating: 2,
-//     readingRate: 70,
-//     status: "reading",
-//   },
-//   {
-//     bookNo: 11,
-//     title: "읽는 중 (4)",
-//     img: "https://cdn.vuetifyjs.com/docs/images/cards/hands.jpg",
-//     rating: 1,
-//     readingRate: 10,
-//     status: "reading",
-//   },
-//   {
-//     bookNo: 12,
-//     title: "읽기 전 책이름 (4)",
-//     img: "https://cdn.vuetifyjs.com/images/cards/sunshine.jpg",
-//     rating: 0,
-//     readingRate: 0,
-//     status: "beforeReading",
-//   },
-//   {
-//     bookNo: 13,
-//     title: "읽기 전 책이름 (5)",
-//     img: "https://cdn.vuetifyjs.com/images/cards/sunshine.jpg",
-//     rating: 0,
-//     readingRate: 0,
-//     status: "beforeReading",
-//   },
-//   {
-//     bookNo: 14,
-//     title: "읽기 전 책이름 (6)",
-//     img: "https://cdn.vuetifyjs.com/images/cards/sunshine.jpg",
-//     rating: 0,
-//     readingRate: 0,
-//     status: "beforeReading",
-//   },
-// ]
-
 const tabList = [
   {
     tabNo: 1,
@@ -323,13 +208,6 @@ const readingTypeSelectList = ref([
 ])
 const readingTypeSelected = ref("all")
 
-// const categorySelectList = ref([
-//   { categoryDisplayName: "전체", categoryName: "all" },
-//   { categoryDisplayName: "소설", categoryName: "novel" },
-//   { categoryDisplayName: "장르소설", categoryName: "genreNovel" },
-//   { categoryDisplayName: "에세이", categoryName: "essay" },
-// ])
-// const categorySelected = ref("")
 
 const orderSelectList = ref([
   { orderDisplayName: "최신순", orderName: "registrationDatetime" },
