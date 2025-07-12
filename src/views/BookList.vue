@@ -164,13 +164,12 @@ import ContentsCover from "@/components/common/ContentsCover.vue"
 import LogForm from "@/components/common/LogForm.vue"
 import BookSearchForm from "@/components/common/BookSearchForm.vue"
 import StarRating from "@/components/common/StarRating.vue"
-
-
 import { CloseOutlined } from "@ant-design/icons-vue"
 import { ref, onMounted, watch } from "vue"
 import { useHttp } from "@/api/http"
 import { useBook } from "@/store/book"
 import { storeToRefs } from "pinia"
+import { useRouter } from "vue-router"
 
 const tabList = [
   {
@@ -207,6 +206,7 @@ const readingTypeSelectList = ref([
   { readingDisplayName: "구매예정", readingName: "pending" },
 ])
 const readingTypeSelected = ref("all")
+
 
 
 const orderSelectList = ref([
@@ -300,7 +300,7 @@ const deleteBook = async (bookInfo) => {
 const resetSelects = () => {
   readingTypeSelected.value = "all"
   //categorySelected.value = "all"
-  orderSelected.value = "최신순"
+  orderSelected.value = "registrationDatetime"
 }
 
 // 소장 유형 변경 시
@@ -331,17 +331,20 @@ const handleTabChange = (key) => {
   }
 }
 
+// const openNewForm = () => {
+//   isNewForm.value = true
+//   isBookSearchFormVisible.value = true
+// }
+
+// const openEditForm = (book) => {
+//   isNewForm.value = false
+//   isLogFormVisible.value = true
+// }
+
+const router = useRouter()
 const openNewForm = () => {
-  isNewForm.value = true
-  isBookSearchFormVisible.value = true
+  router.push("/book/new")
 }
-
-const openEditForm = (book) => {
-  isNewForm.value = false
-  isLogFormVisible.value = true
-}
-
-loadData()
 </script>
 
 <style scoped>
