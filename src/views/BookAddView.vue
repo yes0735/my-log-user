@@ -2,9 +2,20 @@
 <template>
   <div class="w-full mx-auto pb-10 bg-white z-40">
     <div class="sticky top-16 w-full max-w-7xl mx-auto px-3 lg:px-4 border-b bg-white z-40 flex items-center justify-between">
-        <div class="text-lg font-semibold text-gray-800">
+        <!-- <div class="text-lg font-semibold text-gray-800">
             독서 기록 작성
-        </div>
+        </div> -->
+
+        <!-- 왼쪽: 책 추가 버튼 -->
+        <div>
+            <button
+            class="inline-flex items-center px-3 py-2 border border-blue-500 text-blue-500 hover:bg-blue-50 rounded-md transition-colors"
+            @click="openNewForm"
+            >
+            <span class="mr-2">🔎</span>
+            책 검색 / 추가
+            </button>
+        </div>     
         <div class="flex justify-end gap-x-1 py-3">
             <button class="inline-flex items-center px-3 py-2 text-gray-600 hover:bg-gray-100 rounded-md transition-colors"
             @click="handleCancel">
@@ -20,7 +31,8 @@
 
     <!--책 등록 폼-->
     <div class="w-full max-w-7xl mx-auto px-3 lg:px-4" > 
-        <div class="p-4 flex-1 overflow-y-auto">
+       <div class="p-4 flex-1 overflow-y-auto">
+         <!-- 
             <div class="flex justify-end py-2">
                 <button
                 class="inline-flex items-center px-4 py-2 border border-blue-500 text-blue-500 hover:bg-blue-50 rounded-md transition-colors"
@@ -29,7 +41,7 @@
                 <span class="mr-2">🔎</span>
                 책 추가
                 </button>
-          </div>
+          </div> -->
 
           <div class="editor-container space-y-4">
             <!-- 기본 항목들 -->
