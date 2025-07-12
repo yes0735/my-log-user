@@ -41,7 +41,7 @@ const routes = [
     },
   },
     {
-    path: "/book/new",
+    path: "/book/write",
     name: "AboutPage",
     component: () => import("@/views/BookAddView.vue"),
     meta: { requiresAuth: true, isMenu: true, dark: true },

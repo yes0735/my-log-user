@@ -36,20 +36,6 @@
               </a-select-option>
             </a-select>
 
-            <!-- <a-select
-              v-model:value="categorySelected"
-              style="width: 150px"
-              placeholder="분야"
-            >
-              <a-select-option
-                v-for="category in categorySelectList"
-                :key="category.categoryName"
-                :value="category.categoryName"
-              >
-                {{ category.categoryDisplayName }}
-              </a-select-option>
-            </a-select> -->
-
             <a-select
               v-model:value="orderSelected"
               style="width: 150px"
@@ -154,7 +140,6 @@
           더보기
       </button>
     </div>  
-    <BookSearchForm v-model="isBookSearchFormVisible" :is-new="isNewForm" />
   </div>
 
 </template>
@@ -331,20 +316,17 @@ const handleTabChange = (key) => {
   }
 }
 
-// const openNewForm = () => {
-//   isNewForm.value = true
-//   isBookSearchFormVisible.value = true
-// }
-
-// const openEditForm = (book) => {
-//   isNewForm.value = false
-//   isLogFormVisible.value = true
-// }
-
 const router = useRouter()
+
 const openNewForm = () => {
-  router.push("/book/new")
+  router.push("/book/write")
 }
+
+const openEditForm = (book) => {
+  isNewForm.value = false
+  isLogFormVisible.value = true
+}
+
 </script>
 
 <style scoped>

@@ -1,17 +1,22 @@
 
 <template>
   <div class="w-full mx-auto pb-10 bg-white z-40">
-    <!--상단 버튼-->
-    <div class="sticky top-16 w-full max-w-7xl mx-auto px-3 lg:px-4 border-b bg-white z-40 "> 
-      <div class="flex justify-end gap-x-1 py-3">
-        <button class="inline-flex items-center px-3 py-2 text-gray-600 hover:bg-gray-100 rounded-md transition-colors">
-          취소
-        </button>
-        <button class="inline-flex items-center px-3 py-2 bg-black text-white hover:bg-black/80 rounded-md transition-colors">
-          저장
-        </button>
-      </div>
-    </div> 
+    <div class="sticky top-16 w-full max-w-7xl mx-auto px-3 lg:px-4 border-b bg-white z-40 flex items-center justify-between">
+        <div class="text-lg font-semibold text-gray-800">
+            독서 기록 작성
+        </div>
+        <div class="flex justify-end gap-x-1 py-3">
+            <button class="inline-flex items-center px-3 py-2 text-gray-600 hover:bg-gray-100 rounded-md transition-colors"
+            @click="handleCancel">
+            취소
+            </button>
+            <button class="inline-flex items-center px-3 py-2 bg-black text-white hover:bg-black/80 rounded-md transition-colors"
+            @click="saveContent">
+            저장
+            </button>
+        </div>
+    </div>
+
 
     <!--책 등록 폼-->
     <div class="w-full max-w-7xl mx-auto px-3 lg:px-4" > 
@@ -22,7 +27,7 @@
                 @click="openNewForm"
                 >
                 <span class="mr-2">🔎</span>
-                책 검색
+                책 추가
                 </button>
           </div>
 
@@ -326,53 +331,13 @@
                 </div>
 
 
-                <button
-                    @click="addBookRecord"
+                <button @click="addBookRecord"
                     class="w-full bg-black text-white hover:bg-black/80 rounded-md px-4 py-2 transition-colors"
                 >
                     추가하기
                 </button>
             </div>
-
-
-
-
-
-        </div>
-
-            <!-- 블록 에디터
-            <draggable
-              v-model="blocks"
-              item-key="id"
-              handle=".drag-handle"
-              :animation="150"
-              @start="dragStart"
-              @end="dragEnd"
-            >
-              <template #item="{ element, index }">
-                <div class="block-wrapper relative hover:bg-gray-50/50">
-                  <!-- 드래그 핸들 
-                  <div
-                    class="drag-handle absolute left-0 top-0 transition-opacity flex items-center gap-1 select-none z-10 cursor-move touch-manipulation"
-                  >
-                    <Drag class="text-gray-400 w-6 h-6" />
-                  </div>
-                    -->
-                  <!-- 블록 컨텐츠 
-                  <div
-                    :ref="(el) => (blockRefs[index] = el)"
-                    contenteditable="true"
-                    class="min-h-[24px] p-1 empty-block w-full focus:outline-none"
-                    data-placeholder="내용을 입력하세요"
-                    @keydown="(e) => onKeyDown(e, index)"
-                    @input="(e) => onInput(e, index)"
-                    @compositionend="(e) => handleCompositionEnd(e, index)"
-                  >
-                    {{ element.content }}
-                  </div>
-                </div>
-              </template>
-            </draggable> -->
+           </div>
           </div>
         </div>
     </div>
@@ -401,6 +366,7 @@ import CloseIcon from "@/components/icons/CloseIcon.vue"
 import ImageIcon from "@/components/icons/ImageIcon.vue"
 import StarRating from "@/components/common/StarRating.vue"
 import BookSearchForm from "@/components/common/BookSearchForm.vue"
+import { useRouter } from "vue-router"
 
 const props = defineProps({
   isNew: Boolean,
@@ -470,6 +436,13 @@ const addBookRecord = () => {
 const removeBlock = (index) => {
   blocks.value.splice(index, 1)
   nextTick(() => autoResizeTextarea())
+}
+
+const router = useRouter()
+const handleCancel = () => {
+  if (confirm("작성을 취소하시겠습니까?")) {
+    router.push("/")
+  }
 }
 
 const validateBlocks = () => {
