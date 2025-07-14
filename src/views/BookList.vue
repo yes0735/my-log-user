@@ -276,10 +276,14 @@ const deleteBook = async (bookInfo) => {
     okType: "danger",
     onOk: async () => {
       try {
-        await http.delete(`/book/${bookInfo.bookNo}`) // 실제 삭제 API
-        bookList.value = bookList.value.filter(
-          (book) => book.bookNo !== bookInfo.bookNo
-        )
+        await http.delete(`/my-book/${bookInfo.myBookNo}`) // 실제 삭제 API
+
+        // 리스트 갱신
+        currentPage.value = 0;
+        bookList.value = [];
+        const currentTabInfo = tabList.find(t => t.tabNo === tab.value);
+        await loadData(currentTabInfo?.tabName || "all");
+
       } catch (err) {
         console.error("삭제 실패:", err)
         alert("삭제 중 문제가 발생했습니다.")

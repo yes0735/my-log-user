@@ -12,7 +12,7 @@ actions: {
 
     try {
       console.log('params:', params)
-      const response = await http.get('/book',params)  // params 전달
+      const response = await http.get('/my-book',params)  // params 전달
       console.log('bookList 호출 - response:', response)
       this.data = response
       return response  // 호출부에서 결과를 바로 쓸 수 있도록
