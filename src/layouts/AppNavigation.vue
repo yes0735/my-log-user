@@ -27,6 +27,7 @@
             >
               독서 기록
             </router-link>
+            <!--
             <router-link
               to="/about"
               class="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50"
@@ -34,8 +35,9 @@
             >
               About
             </router-link>
-
+            -->
             <!-- 드롭다운 메뉴 -->
+             <!--
             <div class="relative group">
               <button
                 class="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50 inline-flex items-center"
@@ -81,9 +83,10 @@
                 </div>
               </div>
             </div>
+            -->
           </div>
         </div>
-
+  
         <!-- 오른쪽 영역 -->
         <div class="flex items-center">
           <!-- 데스크톱 로그인/유저 메뉴 -->
@@ -164,6 +167,8 @@
         >
           독서 기록
         </router-link>
+
+        <!--
         <router-link
           to="/about"
           class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50"
@@ -171,12 +176,15 @@
         >
           About
         </router-link>
+
+        
         <router-link
           to="/2"
           class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50"
         >
           Shop
         </router-link>
+          -->
         <template v-if="!isLoggedIn">
           <router-link
             to="/login"
