@@ -361,7 +361,7 @@
     </div>
   </div>
 
-  <BookSearchForm v-model="isBookSearchFormVisible" :is-new="isNewForm" />
+  <BookSearchForm v-model="isBookSearchFormVisible" :is-new="isNewForm"  @selectBook="fillBookInfo" />
 </template>
 
 
@@ -385,6 +385,7 @@ import ImageIcon from "@/components/icons/ImageIcon.vue"
 import StarRating from "@/components/common/StarRating.vue"
 import BookSearchForm from "@/components/common/BookSearchForm.vue"
 import { useRouter } from "vue-router"
+import axios from "axios"
 
 const props = defineProps({
   isNew: Boolean,
@@ -473,17 +474,77 @@ const validateBlocks = () => {
   return true
 }
 
-const saveContent = () => {
+// const saveContent = () => {
+//   if (!validateBlocks()) return
+
+//   const formData = {
+//     bookInfo,
+//     blocks: blocks.value,
+//   }
+//   console.log("저장될 데이터:", formData)
+//   alert("저장되었습니다.")
+//   closeForm()
+// }
+
+
+//이미지 처리
+const imagePreview = ref(null)
+
+const handleImageUpload = (event) => {
+  const file = event.target.files[0]
+  if (!file) return
+
+  if (file.size > 2 * 1024 * 1024) {
+    alert("파일 크기는 2MB를 초과할 수 없습니다.")
+    event.target.value = ""
+    return
+  }
+
+  const reader = new FileReader()
+  reader.onload = (e) => {
+    imagePreview.value = e.target.result
+    bookInfo.coverImage = file
+  }
+  reader.readAsDataURL(file)
+}
+
+const removeImage = () => {
+  imagePreview.value = null
+  bookInfo.coverImage = null
+}
+
+
+//저장
+const saveContent = async () => {
   if (!validateBlocks()) return
 
-  const formData = {
-    bookInfo,
-    blocks: blocks.value,
+  const formData = new FormData()
+
+  const { coverImage, ...bookInfoWithoutImage } = bookInfo
+
+  formData.append("bookInfo", JSON.stringify(bookInfoWithoutImage))
+  formData.append("blocks", JSON.stringify(blocks.value))
+
+  if (coverImage) {
+    formData.append("coverImage", coverImage)
   }
-  console.log("저장될 데이터:", formData)
-  alert("저장되었습니다.")
-  closeForm()
+
+  try {
+    const response = await axios.post("/my-book", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    })
+
+    alert("저장되었습니다.")
+    closeForm()
+  } catch (error) {
+    console.error("저장 실패:", error)
+    alert("저장에 실패했습니다.")
+  }
 }
+
+
 
 const openDropdown = ref(null)
 
@@ -515,30 +576,6 @@ const handleClickOutside = (event) => {
   }
 }
 
-const imagePreview = ref(null)
-
-const handleImageUpload = (event) => {
-  const file = event.target.files[0]
-  if (!file) return
-
-  if (file.size > 2 * 1024 * 1024) {
-    alert("파일 크기는 2MB를 초과할 수 없습니다.")
-    event.target.value = ""
-    return
-  }
-
-  const reader = new FileReader()
-  reader.onload = (e) => {
-    imagePreview.value = e.target.result
-    bookInfo.coverImage = file
-  }
-  reader.readAsDataURL(file)
-}
-
-const removeImage = () => {
-  imagePreview.value = null
-  bookInfo.coverImage = null
-}
 
 const hoverRating = ref(0)
 
@@ -573,6 +610,18 @@ const statusOptions = [
   { value: "reading", label: "읽는 중" },
   { value: "finished", label: "완독" },
 ]
+
+
+// 책 선택 시 정보 반영
+function fillBookInfo(selected) {
+  bookInfo.bookTitle = selected.title
+  bookInfo.author = selected.author
+  bookInfo.publisher = selected.publisher
+  //bookInfo.category = selected.categoryName || ""
+  // cover 이미지도 필요한 경우 별도로 preview 설정
+  imagePreview.value = selected.cover
+  
+}
 
 </script>
 

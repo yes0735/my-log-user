@@ -175,7 +175,7 @@ const props = defineProps({
   modelValue: Boolean,
 })
 
-const emit = defineEmits(["update:modelValue"])
+const emit = defineEmits(["update:modelValue", "selectBook"])
 const loading = ref(false)
 const items = ref([])
 const totalResults = ref(0)
@@ -253,9 +253,11 @@ async function saveContent() {
 
 // 책 선택시 등록 페이지 이동
 function goToDetail(bookInfo) {
-  console.log(bookInfo.title)
-  // router.push(`/detail/${id}`, bookInfo)
+  emit("selectBook", bookInfo) // 부모에게 책 정보 전달
+  emit("update:modelValue", false) // 모달 닫기
 }
+
+
 
 </script>
 
