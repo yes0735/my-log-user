@@ -40,9 +40,15 @@ const routes = [
       code: 404,
     },
   },
-    {
+  {
     path: "/book/write",
-    name: "AboutPage",
+    name: "WritePage",
+    component: () => import("@/views/BookAddView.vue"),
+    meta: { requiresAuth: true, isMenu: true, dark: true },
+  },
+  {
+    path: "/bookCategory",
+    name: "categoryList",
     component: () => import("@/views/BookAddView.vue"),
     meta: { requiresAuth: true, isMenu: true, dark: true },
   },

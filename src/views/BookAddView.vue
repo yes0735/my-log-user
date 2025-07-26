@@ -146,17 +146,46 @@
                 <!-- 5. 분야 -->
                 <div class="form-group flex items-center">
                   <div class="flex items-center gap-2 w-32">
-                    <InputIcons type="text" class="w-4 h-4 text-gray-400" />
+                    <InputIcons type="select" class="w-4 h-4 text-gray-400" />
                     <label class="text-sm font-medium text-gray-700"
                       >분야</label
                     >
                   </div>
-                  <input
-                    type="text"
-                    v-model="bookInfo.category"
-                    class="flex-1 px-3 py-2 rounded-md hover:bg-gray-100 focus:bg-gray-100 focus:outline-none text-gray-700"
-                    placeholder="비어있음"
-                  />
+
+                  <div class="flex-1 relative">
+                    <button
+                      type="button"
+                      @click="toggleDropdown('category')"
+                      class="w-full px-3 py-2 text-left text-sm rounded-md hover:bg-gray-100 focus:bg-gray-100 focus:outline-none text-gray-700 flex justify-between items-center"
+                    >
+                      <span class="text-gray-700">
+                        {{
+                          getSelectedLabel("category", categoryOptions)
+                        }}
+                      </span>
+                      <ChevronIcon :is-open="openDropdown === 'category'" />
+                    </button>
+
+                    <div
+                      v-if="openDropdown === 'category'"
+                      class="absolute z-10 mt-1 w-full bg-white rounded-md shadow-lg border border-gray-200"
+                    >
+                      <div class="py-1">
+                        <button
+                          v-for="option in categoryOptions"
+                          :key="option.value"
+                          @click="selectOption('category', option.value)"
+                          class="w-full px-3 py-2 text-sm text-left hover:bg-gray-100 focus:outline-none"
+                          :class="{
+                            'bg-gray-50': bookInfo.category === option.value,
+                            'font-medium': bookInfo.category === option.value,
+                          }"
+                        >
+                          {{ option.label }}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
                 </div>
 
 
@@ -386,6 +415,7 @@ import StarRating from "@/components/common/StarRating.vue"
 import BookSearchForm from "@/components/common/BookSearchForm.vue"
 import { useRouter } from "vue-router"
 import axios from "axios"
+import { useCategory } from '@/store/category'
 
 const props = defineProps({
   isNew: Boolean,
@@ -401,10 +431,11 @@ const bookInfo = reactive({
   author: "",
   category: "",
   scope: 0,
-  collectionType: "선택하세요",
-  readStatus: "선택하세요",
+  collectionType: "",
+  readStatus: "",
   publisher: "",
-  readStartDate: new Date().toISOString().split("T")[0],
+  //readStartDate: new Date().toISOString().split("T")[0],
+  readStartDate: "",
   readEndDate: "",
   readPage: null,
   totalPages: null,
@@ -416,24 +447,26 @@ const resetForm = () => {
   bookInfo.author = ""
   bookInfo.category = ""
   bookInfo.scope = 0
-  bookInfo.collectionType = "paper_book"
-  bookInfo.readStatus = "reading"
+  bookInfo.collectionType = ""
+  bookInfo.readStatus = ""
   bookInfo.publisher = ""
-  bookInfo.readStartDate = new Date().toISOString().split("T")[0]
+ // bookInfo.readStartDate = new Date().toISOString().split("T")[0]
+  bookInfo.readStartDate = ""
   bookInfo.readEndDate = ""
   bookInfo.readPage = null
   bookInfo.totalPages = null
   bookInfo.coverImage = null
   blocks.value = [{ content: "" }]
-  textareaRefs.length = 0
+  textareaRefs.value = []
 }
 
 const blocks = ref([{ content: "" }])
-const textareaRefs = []
 
+//글 길이에 따라 height 변경
+const textareaRefs = ref([])
 const autoResizeTextarea = () => {
   nextTick(() => {
-    textareaRefs.forEach(textarea => {
+    textareaRefs.value.forEach(textarea => {
       if (textarea) {
         textarea.style.height = "auto"
         textarea.style.height = textarea.scrollHeight + "px"
@@ -558,14 +591,16 @@ const selectOption = (key, value) => {
 }
 
 const getSelectedLabel = (key, options) => {
-  const option = options.find((opt) => opt.value === bookInfo[key])
-  return option ? option.label : "선택하세요"
+  const option = options.find(opt => opt.value === bookInfo[key]);
+  return option ? option.label : "선택하세요";
 }
 
 // 외부 클릭 시 드롭다운 닫기
 onMounted(() => {
   document.addEventListener("click", handleClickOutside)
+  loadCategories() // 카테고리 로드
 })
+
 onUnmounted(() => {
   document.removeEventListener("click", handleClickOutside)
 })
@@ -610,6 +645,25 @@ const statusOptions = [
   { value: "reading", label: "읽는 중" },
   { value: "finished", label: "완독" },
 ]
+
+
+//카테고리
+const categoryStore = useCategory()//Store값 받기
+const categoryOptions = ref([])  // 초기값 빈 배열
+
+async function loadCategories() {
+  try {
+    const res = await categoryStore.fetchCategoryList()
+    if (res?.result) {
+      categoryOptions.value = res.result.map(item => ({
+        value: item.bookCategoryNo,
+        label: item.bookCategoryName
+      }))
+    }
+  } catch (err) {
+    console.error("카테고리 로딩 실패", err)
+  }
+}
 
 
 // 책 선택 시 정보 반영
