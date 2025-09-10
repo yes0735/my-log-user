@@ -25,6 +25,18 @@ const routes = [
     meta: { requiresAuth: false, dark: true },
   },
   {
+    path: "/find-account",
+    name: "FindAccount",
+    component: () => import("@/views/FindAccountView.vue"),
+    meta: { requiresAuth: false, dark: true },
+  },
+  {
+    path: "/find-password",
+    name: "FindPassword",
+    component: () => import("@/views/FindPasswordView.vue"),
+    meta: { requiresAuth: false, dark: true },
+  },
+  {
     path: "/user/join",
     name: "UserJoinPage",
     component: () => import("@/views/UserJoinView.vue"),

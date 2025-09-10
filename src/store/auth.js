@@ -13,7 +13,6 @@ export const useAuthStore = defineStore("auth", {
     },
     refreshTimerId: null,
   }),
-
   getters: {
     decodedToken: (state) => {
       if (state.user.accessToken) {
@@ -26,24 +25,19 @@ export const useAuthStore = defineStore("auth", {
       }
       return null
     },
-
     userName: (state) => {
       return state.decodedToken?.name || ""
     },
-
     accountNo: (state) => {
       return state.decodedToken?.no || ""
     },
-
     userId: (state) => {
       return state.decodedToken?.id || ""
     },
-
     userEmail: (state) => {
       return state.decodedToken?.email || ""
     },
   },
-
   actions: {
     async login(payload) {
       const http = useHttp()
@@ -69,7 +63,6 @@ export const useAuthStore = defineStore("auth", {
 
       return response
     },
-
     setUser(userData) {
       this.user = {
         ...this.user,
@@ -81,12 +74,10 @@ export const useAuthStore = defineStore("auth", {
       localStorage.setItem('refreshToken', userData.refreshToken)
 
     },
-
     restoreToken() {
       this.user.accessToken = localStorage.getItem('accessToken')
       this.user.refreshToken = localStorage.getItem('refreshToken')
     },
-    
     async refresh(payload) {
       const http = useHttp()
       let response = null
@@ -116,7 +107,6 @@ export const useAuthStore = defineStore("auth", {
 
       return false
     },
-
     clearUser() {
       this.user = {
         accessToken: null,
@@ -131,7 +121,6 @@ export const useAuthStore = defineStore("auth", {
         this.refreshTimerId = null
       }
     },
-
     // Silent Refresh 타이머 설정
     scheduleTokenRefresh(expireInSec = 900) {
       if (this.refreshTimerId) clearTimeout(this.refreshTimerId)
@@ -140,7 +129,6 @@ export const useAuthStore = defineStore("auth", {
         this.refreshAccessToken()
       }, (expireInSec - 60) * 1000) // 만료 1분 전
     },
-
     async logout() {
       try {
         // API 호출 로직
@@ -152,5 +140,38 @@ export const useAuthStore = defineStore("auth", {
         throw error
       }
     },
+    async verifyCode(payload = {}) {
+      const http = useHttp()
+      let response = null
+      
+      try {
+        response = await http.post("/auth/find-account/verify-code", payload)
+      } catch (error) {
+        if (error.response) {
+          response = error
+        } else {
+          throw error
+        }
+      }
+      
+      return response
+    },
+    async verifyCodeConfirm(payload = {}) {
+      const http = useHttp()
+      let response = null
+      
+      try {
+        response = await http.post("/auth/find-account/verify-code/confirm", payload)
+      } catch (error) {
+        if (error.response) {
+          response = error
+        } else {
+          throw error
+        }
+      }
+      
+      return response
+    },
+
   },
 })

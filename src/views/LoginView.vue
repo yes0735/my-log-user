@@ -24,38 +24,14 @@
                 required
                 aria-label="이메일 주소 입력"
                 aria-required="true"
-                aria-invalid="false"
-                :aria-errormessage="emailError ? 'email-error' : undefined"
                 class="appearance-none relative block w-full px-4 py-3 border border-[#dadada] placeholder-[#929294] text-gray-900 rounded-[6px] sm:text-base hover:border-black focus:border-black focus:ring-0"
-                :class="{ 'border-red-300': emailError }"
                 placeholder="이메일"
-                @input="validateEmail"
               >
-              <p 
-                v-if="emailError" 
-                id="email-error" 
-                class="mt-1 text-sm text-red-600"
-                role="alert"
-              >
-                {{ emailError }}
-              </p>
             </div>
 
             <!-- 비밀번호 입력 -->
             <div class="relative">
               <label for="password" class="sr-only">비밀번호</label>
-              <!-- <input 
-                id="password" 
-                v-model="password"
-                :type="showPassword ? 'text' : 'password'"
-                required
-                aria-label="비밀번호 입력"
-                aria-required="true"
-                pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{8,}$"
-                title="비밀번호는 영문 대/소문자, 숫자, 특수문자(@$!%*?&#)를 각각 1개 이상 포함한 8자 이상이어야 합니다."
-                class="appearance-none relative block w-full px-4 pr-12 py-3 border border-[#dadada] placeholder-[#929294] text-gray-900 rounded-[6px] sm:text-base hover:border-black focus:border-black focus:ring-0"
-                placeholder="비밀번호"
-              > -->
               <input 
                 id="password" 
                 v-model="password"
@@ -89,22 +65,6 @@
             </div>
           </div>
 
-          <!-- 추가 옵션 -->
-          <!-- <div class="mt-3 flex items-center justify-between text-sm text-[#888]">
-            <div class="flex items-center">
-              <input 
-                id="remember-me" 
-                v-model="rememberMe"
-                type="checkbox"
-                class="h-4 w-4 text-black border-gray-300 rounded focus:ring-black"
-                aria-label="로그인 상태 유지"
-              >
-              <label for="remember-me" class="ml-2">
-                로그인 상태 유지
-              </label>
-            </div>
-          </div> -->
-
           <!-- 로그인 버튼 -->
           <div class="mt-4">
             <button
@@ -128,21 +88,25 @@
       <nav class="text-center mt-4" aria-label="계정 관련 링크">
         <div class="space-x-2 text-sm">
           <router-link 
-            to="/forgot-password" 
+            to="/find-account" 
+            class="text-[#888] hover:text-black transition-colors duration-200 ease-in-out"
+            aria-label="계정 찾기"
+          >
+            계정 찾기
+          </router-link>
+
+          <span class="text-[#888]" aria-hidden="true">|</span>
+
+          <router-link 
+            to="/find-password" 
             class="text-[#888] hover:text-black transition-colors duration-200 ease-in-out"
             aria-label="비밀번호 찾기"
           >
             비밀번호 찾기
           </router-link>
+
           <span class="text-[#888]" aria-hidden="true">|</span>
-          <router-link 
-            to="/find-id" 
-            class="text-[#888] hover:text-black transition-colors duration-200 ease-in-out"
-            aria-label="아이디 찾기"
-          >
-            아이디 찾기
-          </router-link>
-          <span class="text-[#888]" aria-hidden="true">|</span>
+
           <router-link 
             to="/user/join" 
             class="text-[#888] hover:text-black transition-colors duration-200 ease-in-out"
@@ -172,33 +136,16 @@ const password = ref('')
 const showPassword = ref(false)
 const rememberMe = ref(false)
 const loading = ref(false)
-const emailError = ref('')
 const http = useHttp()
-
-const validateEmail = () => {
-  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-  if (!email.value) {
-    emailError.value = '이메일을 입력해주세요.'
-  } else if (!emailPattern.test(email.value)) {
-    emailError.value = '올바른 이메일 형식이 아닙니다.'
-  } else {
-    emailError.value = ''
-  }
-}
 
 const useAuth = useAuthStore()
 
 const handleSubmit = async () => {
   if (loading.value) return
 
-  validateEmail()
-  if (emailError.value) return
 
   loading.value = true
   try {
-    // TODO: 실제 로그인 로직 구현
-    // await new Promise(resolve => setTimeout(resolve, 1500)) // 임시 딜레이
-
     const payload = {
       loginId: email.value,
       loginPw: password.value,

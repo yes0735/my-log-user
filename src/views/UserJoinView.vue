@@ -100,20 +100,20 @@
               {{ passwordError }}
             </p>
 
-            <!-- 핸드폰번호 입력 -->
+            <!-- 핸드폰 번호 입력 -->
             <div>
-              <label for="mobilePhoneNumber" class="sr-only">핸드폰번호</label>
+              <label for="mobilePhoneNumber" class="sr-only">핸드폰 번호</label>
               <input 
                 id="mobilePhoneNumber" 
                 :value="mobilePhoneNumber"
                 @input="handlePhoneInput"
                 type="tel"
-                pattern="[0-9]{3}-[0-9]{4}-[0-9]{4}"
-                title="010-1234-5678"
                 maxlength="13"
                 required
-                aria-label="핸드폰번호 입력"
+                aria-label="핸드폰 번호 입력"
                 aria-required="true"
+                pattern="^010-\d{4}-\d{4}$"
+                title="010-1234-1234 "
                 class="appearance-none relative block w-full px-4 py-3 border border-[#dadada] placeholder-[#929294] text-gray-900 rounded-[6px] sm:text-base hover:border-black focus:border-black focus:ring-0"
                 placeholder="010-1234-5678"
               >
@@ -212,7 +212,7 @@ const visible = ref(false)
 const visibleConfirm = ref(false)
 const loading = ref(false)
 
-// 전화번호 하이픈 처리
+// 핸드폰 형식 자동 하이픈
 function handlePhoneInput(event) {
   const raw = event.target.value.replace(/[^0-9]/g, '')
   if (raw.length <= 3) {

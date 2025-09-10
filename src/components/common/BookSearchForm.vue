@@ -16,52 +16,54 @@
         </div>
 
         <!-- 책 검색 -->
-        <div class="flex flex-col gap-2 p-4 border-b shrink-0">
-          <div class="form-group flex items-center">
-            <a-select
-              v-model:value="searchTargetSelected"
-              style="width: 150px"
-              placeholder="검색어 종류"
-            >
-              <a-select-option
-                v-for="type in searchTargetSelectList"
-                :key="type.readingName"
-                :value="type.readingName"
+        <h2 id="book-search-title" class="sr-only">책 검색 폼</h2>
+        <form class="mt-6" @submit.prevent="onSubmit" aria-labelledby="book-search-title">
+          <div class="flex flex-col gap-2 p-4 border-b shrink-0">
+            <div class="form-group flex items-center">
+              <a-select
+                v-model:value="searchTargetSelected"
+                style="width: 150px"
+                placeholder="검색어 종류"
               >
-                {{ type.readingDisplayName }}
-              </a-select-option>
-            </a-select>
+                <a-select-option
+                  v-for="type in searchTargetSelectList"
+                  :key="type.readingName"
+                  :value="type.readingName"
+                >
+                  {{ type.readingDisplayName }}
+                </a-select-option>
+              </a-select>
 
-            <input
-              id="searchValue" 
-              type="text"
-              v-model="searchValue"
-              class="flex-1 px-3 rounded-md border border-gray-300 shadow-sm focus:border-black focus:ring-black"
-              placeholder="검색어를 입력해주세요"
-            />
-            <button
-              class="px-3 py-1.5 bg-black text-white hover:bg-black/80 rounded-md transition-colors text-sm disabled:opacity-50 disabled:cursor-not-allowed"
-              @click="saveContent"
-              :disabled="!isFormValid || loading"
-            >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="20"
-              height="20"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              viewBox="0 0 24 24"
-            >
-              <circle cx="11" cy="11" r="8" />
-              <line x1="21" y1="21" x2="16.65" y2="16.65" />
-            </svg>
-            </button>
+              <input
+                id="searchValue" 
+                type="text"
+                v-model="searchValue"
+                class="flex-1 px-3 rounded-md border border-gray-300 shadow-sm focus:border-black focus:ring-black"
+                placeholder="검색어를 입력해주세요"
+              />
+              <button
+                class="px-3 py-1.5 bg-black text-white hover:bg-black/80 rounded-md transition-colors text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                :disabled="!isFormValid || loading"
+              >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                viewBox="0 0 24 24"
+              >
+                <circle cx="11" cy="11" r="8" />
+                <line x1="21" y1="21" x2="16.65" y2="16.65" />
+              </svg>
+              </button>
+            </div>
+            
           </div>
-          
-        </div>
+        </form>
 
         <!-- 에디터 영역 - 스크롤 가능하도록 수정 -->
         <div class="flex-1 p-4 h-[80px] overflow-y-auto">
@@ -138,7 +140,7 @@
           </button>
           <button
             class="px-4 py-2 bg-black text-white hover:bg-black/80 rounded-md transition-colors"
-            @click="saveContent"
+            @click="closeForm"
           >
             다음
           </button>
@@ -226,7 +228,7 @@ searchTargetSelected.value &&
 )
 
 // 검색 버튼 클릭 시 실행
-async function saveContent() {
+async function onSubmit() {
 
   loading.value = true
   try {
