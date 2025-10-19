@@ -1,4 +1,4 @@
-name: [PRODUCTION] my-log-user deploy Vue3 to S3 + CloudFront
+name: '[PRODUCTION] my-log-user deploy Vue3 to S3 + CloudFront'
 on:
   push:
     branches: 
