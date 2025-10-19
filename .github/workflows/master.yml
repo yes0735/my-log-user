@@ -31,7 +31,7 @@ jobs:
         run: npm ci
       - run: |
           echo ${{ github.sha }} > public/.version
-          npm run build-devserver
+          npm run build
       - uses: jakejarvis/s3-sync-action@master
         with:
           args: --delete
