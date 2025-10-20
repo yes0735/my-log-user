@@ -13,4 +13,4 @@ npm run dev
 ```
 
 
-# Deploy Vue3 to S3 + CloudFront test2
+# Deploy Vue3 to S3 + CloudFront
