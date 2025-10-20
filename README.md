@@ -11,3 +11,6 @@ nvm use 20
 npm install
 npm run dev
 ```
+
+
+# Deploy Vue3 to S3 + CloudFront
